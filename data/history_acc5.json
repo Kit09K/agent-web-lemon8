@@ -1,0 +1,269 @@
+[
+  {
+    "id": "acc5_1775978909587",
+    "accountId": "acc5",
+    "generatedAt": "2026-04-12T07:28:29.587Z",
+    "niche": "lifestyle",
+    "contentType": "viral_hook",
+    "userPrompt": "",
+    "result": {
+      "analysis": {
+        "topics": [
+          "Study tips and exam preparation",
+          "University lifestyle and OOTDs",
+          "Self-care, hygiene, and looking good",
+          "Hair, makeup, and beauty routines",
+          "Exercise and fitness",
+          "Self-improvement and confidence",
+          "Photo editing and Instagram tricks"
+        ],
+        "formats": [
+          "Listicles (e.g., 5 habits, 7 days)",
+          "Step-by-step How-To guides",
+          "Hacks for lazy people or beginners",
+          "Budget-friendly or zero-cost tips",
+          "Q&A and asking for advice"
+        ],
+        "hooks": [
+          "Contrarian statements (e.g., Read without taking notes)",
+          "Addressing highly specific desires (e.g., Look clean like you just showered)",
+          "Appealing to laziness or lack of time (e.g., 10-minute makeup, lazy person's guide)"
+        ],
+        "tone": "Friendly, relatable, encouraging, heavily utilizing emojis, and speaking directly to the reader like a big sister or close friend.",
+        "high_performing_insights": "The most viral posts (600+ and 200+ likes) offer 'lazy' or 'contrarian' solutions to common struggles. They promise high-value results (getting good grades, looking impeccably clean) with zero or minimal effort. Modifiers like 'Zero budget' and 'For lazy people' are massive engagement drivers."
+      },
+      "avoid": [
+        "Studying methods, exam prep, and university life",
+        "Basic hygiene, skincare, and looking clean",
+        "Hair styles, makeup routines, and beauty tips",
+        "Exercise routines for lazy people",
+        "Photo editing, Instagram GIFs, and camera tricks",
+        "Perfume selection",
+        "General self-confidence tips and changing looks"
+      ],
+      "ideas": [
+        {
+          "title": "เลิกทำรายรับรายจ่าย! ก็มีเงินเก็บหลักหมื่นได้💸✨",
+          "hook": "ใครที่พยายามจดบัญชีรายรับรายจ่ายทีไร ล่มไม่เป็นท่าทุกที ฟังทางนี้ค่ะ! 🛑",
+          "type": "viral_hook",
+          "angle": "Contrarian finance advice for lazy people (Stop tracking, start automating).",
+          "caption": "ใครที่พยายามจดบัญชีรายรับรายจ่ายทีไร ล่มไม่เป็นท่าทุกที ฟังทางนี้ค่ะ! 🛑 เราคือคนนึงที่ขี้เกียจจดมากก แต่ค้นพบทริค 'หักดิบตั้งแต่เงินเดือนออก' หรือการโอนเข้าบัญชีเงินเก็บอัตโนมัติแบบไม่ต้องคิดเยอะ ใช้ชีวิตชิลๆ ไม่ต้องมานั่งจดทุกบาท แต่เงินเก็บพุ่งปรี๊ดด ลองเอาวิธีนี้ไปใช้ดูนะคะ ชีวิตง่ายขึ้นเยอะ! ✨ #ออมเงินฉบับคนขี้เกียจ #ทริคเก็บเงิน #การเงินการลงทุน #มนุษย์เงินเดือน",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "ทริคจัดห้องฉบับคนขี้เกียจ 5 นาทีเสร็จ! 🛏️🪄",
+          "hook": "ความลับนางฟ้า! ห้องรกแค่ไหน ก็ดูมินิมอลได้ใน 5 นาที โดยไม่ต้องจับไม้กวาดสักแอะ 🤫",
+          "type": "viral_hook",
+          "angle": "The illusion of cleanliness - focusing on flat surfaces instead of deep cleaning.",
+          "caption": "ความลับนางฟ้า! ห้องรกแค่ไหน ก็ดูมินิมอลได้ใน 5 นาที โดยไม่ต้องจับไม้กวาดสักแอะ 🤫 ใครมีเพื่อนกำลังจะมาห้อง หรืออยากถ่ายรูปแต่ห้องเละมาก ทริคคือ 'การเคลียร์พื้นที่แนวราบ' ค่ะ! โต๊ะ เตียง พื้น แค่กวาดของไปซ่อนให้พ้นสายตา (ลงตะกร้าแล้วเอาผ้าคลุม) ห้องก็ดูสะอาดขึ้น 80% ทันที! ลองไปทำตามกันดูน้า 🧺✨ #จัดห้องมินิมอล #ทริคแม่บ้าน #สายขี้เกียจ #แต่งห้องนอน",
+          "score": {
+            "creativity": 8,
+            "virality": 8,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "วิธีปฏิเสธนัดเพื่อน แบบไม่เสียเพื่อน (ฉบับ Introvert) 💬🙅‍♀️",
+          "hook": "เคยไหม? ตอบตกลงไปแล้ว แต่พอใกล้ถึงวันนัด กลับอยากเทซะงั้น! 😭",
+          "type": "viral_hook",
+          "angle": "Validating introvert guilt and providing copy-paste scripts for canceling plans politely.",
+          "caption": "เคยไหม? ตอบตกลงไปแล้ว แต่พอใกล้ถึงวันนัด กลับอยากเทซะงั้น! 😭 การฝืนออกไปเจอคนตอนแบตโซเชียลหมดคือหายนะของชาว Introvert ค่ะ วันนี้เราเลยมาแจก 'ประโยคปฏิเสธนัด' ที่ดูซอฟต์ ไม่ทำร้ายจิตใจเพื่อน และไม่ต้องรู้สึกผิด! เซฟเก็บไว้ใช้รัวๆ ได้เลยค่ะ 💖 #มนุษย์อินโทรเวิร์ต #จิตวิทยาพัฒนาตนเอง #ทริคใช้ชีวิต #ฮาวทู",
+          "score": {
+            "creativity": 9,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "เลิกตั้งนาฬิกาปลุก 10 รอบ! ตื่นยังไงให้ไม่สลึมสลือ ⏰☀️",
+          "hook": "ถ้าคุณตั้งนาฬิกาปลุกห่างกันทุกๆ 5 นาที... คุณกำลังทำร้ายสมองตัวเองอยู่ค่ะ! 🧠💥",
+          "type": "viral_hook",
+          "angle": "Shock value (snoozing is bad) combined with a scientific but easy fix (90-min sleep cycles).",
+          "caption": "ถ้าคุณตั้งนาฬิกาปลุกห่างกันทุกๆ 5 นาที... คุณกำลังทำร้ายสมองตัวเองอยู่ค่ะ! 🧠💥 การกด Snooze ทำให้เราตื่นมาแล้วงัวเงียกว่าเดิม ทริคที่เราใช้แล้วเวิร์คมากคือการนับ 'รอบการนอน' (Sleep Cycle) รอบละ 90 นาที ตื่นมาช่วงสลึมสลือน้อยที่สุด ร่างกายจะเฟรชแบบไม่ต้องพึ่งกาแฟเลย! ลองคำนวณเวลานอนคืนนี้ดูนะคะ 🌙✨ #ทริคการนอน #ตื่นเช้า #สุขภาพดีเริ่มต้นที่การนอน #ดูแลตัวเอง",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "อาการไถมือถือจนดึก แก้ได้ด้วยทริคนี้! 📱🚫",
+          "hook": "แค่เปลี่ยนหน้าจอมือถือเป็น 'สีขาวดำ' ความอยากเล่นโซเชียลก่อนนอนก็ลดลงฮวบ! 🖤🤍",
+          "type": "viral_hook",
+          "angle": "Tech hack requiring zero willpower to cure a psychological habit (doomscrolling).",
+          "caption": "แค่เปลี่ยนหน้าจอมือถือเป็น 'สีขาวดำ' ความอยากเล่นโซเชียลก่อนนอนก็ลดลงฮวบ! 🖤🤍 ใครที่ชอบบอกตัวเองว่า 'ขอไถฟีดอีก 5 นาที' แล้วรู้ตัวอีกทีตี 3... ลองตั้งค่าโหมด Grayscale ด่วนๆ ค่ะ! สมองเราจะหมดความสนใจกับภาพสีจืดๆ ไปเอง เป็นวิธีดัดนิสัยแบบไม่ต้องพึ่งความอดทนเลย เวิร์คมาก! 💤 #ติดมือถือ #ทริคไอที #พัฒนาตัวเอง #สุขภาพการนอน",
+          "score": {
+            "creativity": 9,
+            "virality": 10,
+            "uniqueness": 10
+          }
+        }
+      ],
+      "best_ideas": [
+        {
+          "title": "อาการไถมือถือจนดึก แก้ได้ด้วยทริคนี้! 📱🚫",
+          "hook": "แค่เปลี่ยนหน้าจอมือถือเป็น 'สีขาวดำ' ความอยากเล่นโซเชียลก่อนนอนก็ลดลงฮวบ! 🖤🤍",
+          "type": "viral_hook",
+          "angle": "Tech hack requiring zero willpower to cure a psychological habit (doomscrolling).",
+          "caption": "แค่เปลี่ยนหน้าจอมือถือเป็น 'สีขาวดำ' ความอยากเล่นโซเชียลก่อนนอนก็ลดลงฮวบ! 🖤🤍 ใครที่ชอบบอกตัวเองว่า 'ขอไถฟีดอีก 5 นาที' แล้วรู้ตัวอีกทีตี 3... ลองตั้งค่าโหมด Grayscale ด่วนๆ ค่ะ! สมองเราจะหมดความสนใจกับภาพสีจืดๆ ไปเอง เป็นวิธีดัดนิสัยแบบไม่ต้องพึ่งความอดทนเลย เวิร์คมาก! 💤 #ติดมือถือ #ทริคไอที #พัฒนาตัวเอง #สุขภาพการนอน",
+          "score": {
+            "creativity": 9,
+            "virality": 10,
+            "uniqueness": 10
+          }
+        },
+        {
+          "title": "เลิกทำรายรับรายจ่าย! ก็มีเงินเก็บหลักหมื่นได้💸✨",
+          "hook": "ใครที่พยายามจดบัญชีรายรับรายจ่ายทีไร ล่มไม่เป็นท่าทุกที ฟังทางนี้ค่ะ! 🛑",
+          "type": "viral_hook",
+          "angle": "Contrarian finance advice for lazy people (Stop tracking, start automating).",
+          "caption": "ใครที่พยายามจดบัญชีรายรับรายจ่ายทีไร ล่มไม่เป็นท่าทุกที ฟังทางนี้ค่ะ! 🛑 เราคือคนนึงที่ขี้เกียจจดมากก แต่ค้นพบทริค 'หักดิบตั้งแต่เงินเดือนออก' หรือการโอนเข้าบัญชีเงินเก็บอัตโนมัติแบบไม่ต้องคิดเยอะ ใช้ชีวิตชิลๆ ไม่ต้องมานั่งจดทุกบาท แต่เงินเก็บพุ่งปรี๊ดด ลองเอาวิธีนี้ไปใช้ดูนะคะ ชีวิตง่ายขึ้นเยอะ! ✨ #ออมเงินฉบับคนขี้เกียจ #ทริคเก็บเงิน #การเงินการลงทุน #มนุษย์เงินเดือน",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "acc5_1775979174929",
+    "accountId": "acc5",
+    "generatedAt": "2026-04-12T07:32:54.929Z",
+    "niche": "productivity",
+    "contentType": "list_tips",
+    "userPrompt": "",
+    "result": {
+      "analysis": {
+        "topics": [
+          "Study hacks and exam preparation",
+          "University life survival and adaptation",
+          "Low-effort/lazy self-care and workouts",
+          "Budget-friendly/free beauty and hygiene tips",
+          "Emergency fixes (waking up late, greasy hair)",
+          "Aesthetic upgrades (IG GIFs, photo editing, looking clean)"
+        ],
+        "formats": [
+          "Numbered lists with actionable steps",
+          "Checklists",
+          "Before/After or Problem/Solution frameworks",
+          "Hack/Trick sharing (ทริค)"
+        ],
+        "hooks": [
+          "Lazy person's guide (ฉบับคนขี้เกียจ)",
+          "Zero cost / Budget friendly (ไม่ใช้เงินสักบาท / ประหยัดงบ)",
+          "Minimal effort for maximum results (ทำแค่นี้ก็... / แบบไม่จดสักตัว)",
+          "Urgency / Emergency situations (ตื่นสายทำไงดี / ไม่อยากอ่านหนักใกล้สอบ)"
+        ],
+        "tone": "Friendly, relatable, empathetic (peer-to-peer or senior-to-junior), encouraging, and highly aesthetic with strategic emoji use (🌟, ❗️, 💖, ✨).",
+        "high_performing_insights": "The highest performing posts (e.g., studying without notes - 621 likes, looking clean all day - 287 likes, lazy workouts - 76 likes) specifically target 'low friction' productivity. Users are highly engaged when promised a significant positive outcome (good grades, looking great, staying fit) with minimal effort, no money, or by bypassing traditional hard work."
+      },
+      "avoid": [
+        "Studying without taking notes",
+        "7-day study schedules or general exam prep timelines",
+        "Taking breaks without feeling guilty",
+        "Surviving hated subjects",
+        "University prep checklists or Year 1 vs Year 2 comparisons",
+        "What's in my uni bag",
+        "Lazy person's workouts or self-care routines",
+        "Free habits to look better or looking clean all day",
+        "Emergency morning routines (makeup in 10 mins, greasy hair fixes)",
+        "IG story GIFs, photo booth apps, or photo editing tips",
+        "Choosing perfumes or hair colors"
+      ],
+      "ideas": [
+        {
+          "title": "5 ทริคจัดระเบียบ iPad ฉบับคนขี้เกียจ📱✨",
+          "hook": "ไอแพดรกจนหาไฟล์ไม่เจอ! มาดูวิธีจัดระเบียบแบบคนขี้เกียจ ทำครั้งเดียวใช้ได้ยาวๆ",
+          "type": "list_tips",
+          "angle": "Digital productivity applying the winning 'lazy person's guide' formula to device organization.",
+          "caption": "ไอแพดรกจนหาไฟล์ไม่เจอ! 📱💦 ใครเป็นสายเซฟดะ โหลดแหลกจนเครื่องค้างบ้าง? วันนี้มาแจก 5 ทริคจัดระเบียบ iPad แบบฉบับคนขี้เกียจ ทำครั้งเดียวจบ หาของเจอง่ายขึ้น 100% แถมได้พื้นที่คืนมาเพียบ! 💖 1. ลบแอปที่ไม่ได้เปิดเกิน 1 เดือน 2. ตั้งชื่อโฟลเดอร์ด้วย Emoji ให้จำง่าย 3. ย้ายไฟล์เก่าลง Cloud 4. เคลียร์รูปแคปหน้าจอที่ซ้ำซ้อน 5. จัดหน้า Home ให้คลีนเหลือแค่แอปที่ใช้ทุกวัน ลองไปทำตามกันดูน้า ✨ #จัดระเบียบไอแพด #ทริคไอที #แอปดีบอกต่อ #ชีวิตมหาลัย #Productivity",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "3 สิ่งที่ต้องทำก่อนนอน ตื่นมาชีวิตง่ายขึ้น 10 เท่า🌙❗️",
+          "hook": "ไม่อยากตื่นมาแล้วหัวหมุนวุ่นวาย ลองปรับรูทีนก่อนนอนแค่นิดเดียว พรุ่งนี้โปรดักทีฟขึ้นแน่นอน!",
+          "type": "list_tips",
+          "angle": "Nighttime routine for daytime productivity, leveraging the 'time-saving/minimal effort' pattern.",
+          "caption": "ไม่อยากตื่นมาแล้วหัวหมุนวุ่นวาย 🌪️ ลองปรับรูทีนก่อนนอนแค่นิดเดียว! หลายคนชอบบ่นว่าตอนเช้าเวลาน้อย ทำอะไรก็ไม่ทัน แค่เราย้าย 3 สิ่งนี้มาทำก่อนนอน รับรองว่าตื่นมาชีวิตจะง่ายและชิลขึ้นแบบสุดๆ 🌙✨ 1. เลือกชุดที่จะใส่พรุ่งนี้แขวนเตรียมไว้ 2. เขียน To-do list 3 อย่างที่ต้องทำให้เสร็จในวันพรุ่งนี้ 3. จัดกระเป๋าให้พร้อม แค่นี้ตอนเช้าก็มีเวลาจิบกาแฟสวยๆ ไม่ต้องวิ่งสู้ฟัดแล้วค่า ☕️💖 #พัฒนาตัวเอง #ทริคบริหารเวลา #ชีวิตดีขึ้น #Productivity #รีวิวชีวิตทำงาน",
+          "score": {
+            "creativity": 7,
+            "virality": 9,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "งานเยอะจนท้อ! ทริคเคลียร์งานฉบับคนหัวหมุน🌪️✅",
+          "hook": "งานก็เยอะ การบ้านก็แยะ ไม่รู้จะเริ่มตรงไหนก่อน? ใช้ทริคนี้เคลียร์ก้อนความเครียดให้หายวับ!",
+          "type": "list_tips",
+          "angle": "Actionable task prioritization for when users feel overwhelmed, addressing mental friction.",
+          "caption": "งานก็เยอะ การบ้านก็แยะ ไม่รู้จะเริ่มตรงไหนก่อน? 🤯 ใครกำลังเจอสภาวะ 'งานล้นมือ' จนช็อตฟีลทำอะไรไม่ถูก มาลองใช้ 4 สเต็ปนี้เคลียร์ความวุ่นวายกันค่ะ! 📝✨ 1. เททุกอย่างลงกระดาษ (Brain Dump) ให้หัวโล่ง 2. ใช้กฎ 2 นาที (อะไรทำเสร็จใน 2 นาทีให้ทำเลยทันที) 3. จัดลำดับความสำคัญตามความด่วน 4. โฟกัสทำทีละอย่าง ห้ามทำมัลติทาสก์เด็ดขาด! ลองเอาไปปรับใช้ดูน้า รับรองว่างานเสร็จไวขึ้นแน่นอน ✌️🔥 #ทริคการเรียน #เคล็ดลับพัฒนาตัวเอง #บริหารเวลา #Productivity #วัยเรียน",
+          "score": {
+            "creativity": 8,
+            "virality": 8,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "จัดโต๊ะยังไง ให้มีสมาธิขึ้น 300% (ไม่ต้องซื้อของเพิ่ม)🪑💡",
+          "hook": "นั่งโต๊ะทีไรหมดไฟทุกที! รู้มั้ยว่าแค่ขยับของบนโต๊ะนิดเดียว ก็ดึงสมาธิกลับมาได้แบบงงๆ",
+          "type": "list_tips",
+          "angle": "Environmental productivity hack using the highly successful 'free/zero budget' hook.",
+          "caption": "นั่งโต๊ะทีไรหมดไฟทุกที! 🪑💤 รู้มั้ยว่าสภาพแวดล้อมมีผลต่อสมาธิมากๆ วันนี้มาแชร์ทริคจัดโต๊ะทำงาน/โต๊ะอ่านหนังสือให้ดึงสมาธิกลับมาได้ 300% แบบไม่ต้องเสียเงินซื้อของแพงๆ เลยค่ะ 💡✨ 1. เคลียร์ของที่ไม่ใช้ออกให้หมด (ลดสิ่งเร้า) 2. วางเฉพาะของที่ใช้บ่อยไว้ใกล้มือ 3. ขยับโต๊ะให้รับแสงธรรมชาติ 4. หาต้นไม้เล็กๆ หรือรูปภาพสบายตามาวางไว้พักสายตา แค่จัดโต๊ะใหม่ สมองก็แล่นปรู๊ดปร๊าดพร้อมลุยแล้ว! 🌿📚 #จัดโต๊ะอ่านหนังสือ #ทริคการเรียน #ไอเดียจัดโต๊ะทำงาน #Productivity #มุมโปรด",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "ทริคแก้ “ง่วงช่วงบ่าย” ปั่นงานต่อได้แบบตาค้าง🥱⚡",
+          "hook": "กินข้าวเที่ยงเสร็จทีไร หนังตาหย่อนทุกที! แจกทริคปลุกตัวเองให้ตื่นพร้อมลุยงานต่อแบบไม่พึ่งกาแฟ",
+          "type": "list_tips",
+          "angle": "Energy management hack targeting a universal pain point (afternoon slump) with natural solutions.",
+          "caption": "กินข้าวเที่ยงเสร็จทีไร หนังตาหย่อนทุกที! 🥱💦 ใครมีอาการ Food Coma หรือหมดไฟช่วงบ่าย มาดูทริคปลุกตัวเองให้ตื่นพร้อมปั่นงานต่อแบบไม่พึ่งกาแฟแก้วที่สองกันค่ะ! ⚡️✨ 1. ลุกเดินยืดเส้นยืดสาย 5 นาทีให้เลือดไหลเวียน 2. จิบน้ำเปล่าเย็นๆ ตลอดบ่าย 3. ฟังเพลงจังหวะสนุกๆ ปลุกเอเนอร์จี้ 4. สลับไปทำงานที่ใช้ความคิดสร้างสรรค์แทนงานเอกสารจุกจิก รับรองว่าตาสว่างพร้อมลุยยยย 👀🔥 #ทริควัยทำงาน #พัฒนาตัวเอง #วัยเรียน #Productivity #หมดไฟ",
+          "score": {
+            "creativity": 7,
+            "virality": 8,
+            "uniqueness": 8
+          }
+        }
+      ],
+      "best_ideas": [
+        {
+          "title": "5 ทริคจัดระเบียบ iPad ฉบับคนขี้เกียจ📱✨",
+          "hook": "ไอแพดรกจนหาไฟล์ไม่เจอ! มาดูวิธีจัดระเบียบแบบคนขี้เกียจ ทำครั้งเดียวใช้ได้ยาวๆ",
+          "type": "list_tips",
+          "angle": "Digital productivity applying the winning 'lazy person's guide' formula to device organization.",
+          "caption": "ไอแพดรกจนหาไฟล์ไม่เจอ! 📱💦 ใครเป็นสายเซฟดะ โหลดแหลกจนเครื่องค้างบ้าง? วันนี้มาแจก 5 ทริคจัดระเบียบ iPad แบบฉบับคนขี้เกียจ ทำครั้งเดียวจบ หาของเจอง่ายขึ้น 100% แถมได้พื้นที่คืนมาเพียบ! 💖 1. ลบแอปที่ไม่ได้เปิดเกิน 1 เดือน 2. ตั้งชื่อโฟลเดอร์ด้วย Emoji ให้จำง่าย 3. ย้ายไฟล์เก่าลง Cloud 4. เคลียร์รูปแคปหน้าจอที่ซ้ำซ้อน 5. จัดหน้า Home ให้คลีนเหลือแค่แอปที่ใช้ทุกวัน ลองไปทำตามกันดูน้า ✨ #จัดระเบียบไอแพด #ทริคไอที #แอปดีบอกต่อ #ชีวิตมหาลัย #Productivity",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "จัดโต๊ะยังไง ให้มีสมาธิขึ้น 300% (ไม่ต้องซื้อของเพิ่ม)🪑💡",
+          "hook": "นั่งโต๊ะทีไรหมดไฟทุกที! รู้มั้ยว่าแค่ขยับของบนโต๊ะนิดเดียว ก็ดึงสมาธิกลับมาได้แบบงงๆ",
+          "type": "list_tips",
+          "angle": "Environmental productivity hack using the highly successful 'free/zero budget' hook.",
+          "caption": "นั่งโต๊ะทีไรหมดไฟทุกที! 🪑💤 รู้มั้ยว่าสภาพแวดล้อมมีผลต่อสมาธิมากๆ วันนี้มาแชร์ทริคจัดโต๊ะทำงาน/โต๊ะอ่านหนังสือให้ดึงสมาธิกลับมาได้ 300% แบบไม่ต้องเสียเงินซื้อของแพงๆ เลยค่ะ 💡✨ 1. เคลียร์ของที่ไม่ใช้ออกให้หมด (ลดสิ่งเร้า) 2. วางเฉพาะของที่ใช้บ่อยไว้ใกล้มือ 3. ขยับโต๊ะให้รับแสงธรรมชาติ 4. หาต้นไม้เล็กๆ หรือรูปภาพสบายตามาวางไว้พักสายตา แค่จัดโต๊ะใหม่ สมองก็แล่นปรู๊ดปร๊าดพร้อมลุยแล้ว! 🌿📚 #จัดโต๊ะอ่านหนังสือ #ทริคการเรียน #ไอเดียจัดโต๊ะทำงาน #Productivity #มุมโปรด",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        }
+      ]
+    }
+  }
+]
