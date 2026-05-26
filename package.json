@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "cheerio": "^1.2.0",
+    "framer-motion": "^12.38.0",
     "fs-extra": "^11.3.4",
     "multer": "^2.1.1",
     "next": "^14.2.35",

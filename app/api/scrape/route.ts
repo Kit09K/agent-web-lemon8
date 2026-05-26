@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { chromium } from "playwright";
+import { chromium, type Browser } from "playwright";
 import fs from "fs";
 import path from "path";
 
@@ -8,7 +8,7 @@ let isScraping = false;
 const DATA_DIR = path.join(process.cwd(), "data");
 const SCRAPED_PATH = path.join(DATA_DIR, "scraped.json");
 
-function saveScrапedData(data: {
+function saveScrapedData(data: {
   profile: { name: string; bio: string };
   total_contents: number;
   contents: { title: string; description?: string; stats?: string }[];
@@ -16,6 +16,21 @@ function saveScrапedData(data: {
 }) {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
   fs.writeFileSync(SCRAPED_PATH, JSON.stringify(data, null, 2), "utf-8");
+}
+
+function isValidLemon8Url(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+
+  try {
+    const parsedUrl = new URL(value);
+    return (
+      parsedUrl.protocol === "https:" &&
+      (parsedUrl.hostname === "lemon8-app.com" ||
+        parsedUrl.hostname.endsWith(".lemon8-app.com"))
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -27,12 +42,12 @@ export async function POST(req: NextRequest) {
   }
 
   isScraping = true;
-  let browser;
+  let browser: Browser | undefined;
 
   try {
     const { url } = await req.json();
 
-    if (!url || !url.includes("lemon8-app.com")) {
+    if (!isValidLemon8Url(url)) {
       throw new Error("Invalid Lemon8 URL");
     }
 
@@ -44,7 +59,10 @@ export async function POST(req: NextRequest) {
     });
 
     const page = await context.newPage();
-    await page.goto(url, { waitUntil: "networkidle" });
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {
+      console.warn("Network did not become idle before timeout. Continuing scrape.");
+    });
 
     const profileData = await page.evaluate(() => {
       const name =
@@ -55,26 +73,33 @@ export async function POST(req: NextRequest) {
       return { name, bio };
     });
 
-    // Scroll loop
     let previousHeight = 0;
     let retryCount = 0;
+
     while (retryCount < 15) {
-      const loadMoreBtn = page.getByText(/ดูเพิ่มเติม|Load More/i);
+      const loadMoreBtn = page.getByText(/ดูเพิ่มเติม|Load More/i).first();
       const isVisible = await loadMoreBtn.isVisible().catch(() => false);
+
       if (isVisible) {
-        await loadMoreBtn.first().click();
+        await loadMoreBtn.click().catch(async () => {
+          await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        });
       } else {
         await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
       }
+
       await page.waitForTimeout(2000);
+
       const currentHeight = await page.evaluate(() => document.body.scrollHeight);
       if (currentHeight === previousHeight) break;
+
       previousHeight = currentHeight;
       retryCount++;
     }
 
     const contents = await page.evaluate(() => {
       const items: { title: string; description?: string; stats?: string }[] = [];
+
       document.querySelectorAll(".article_card").forEach((card) => {
         const title =
           card.querySelector(".article_card_main_body_title")?.textContent?.trim() ||
@@ -98,6 +123,7 @@ export async function POST(req: NextRequest) {
           });
         }
       });
+
       return items;
     });
 
@@ -108,8 +134,7 @@ export async function POST(req: NextRequest) {
       scraped_at: new Date().toISOString(),
     };
 
-    // บันทึกลง scraped.json
-    saveScrапedData(result);
+    saveScrapedData(result);
     console.log(`Saved ${contents.length} posts to scraped.json`);
 
     return NextResponse.json({ success: true, ...result });

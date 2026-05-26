@@ -1,9 +1,1037 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { ACCOUNTS, ACCOUNTS_DETAIL, CORRECT_CODE, STORAGE_KEY, TTL_MS, POLAROID_DATA, VIDEO_SCENES } from "@/lib/constants";
+
+// ---- Types ----
+type Idea = {
+  title: string;
+  hook: string;
+  type: string;
+  angle: string;
+  caption: string;
+  score: { creativity: number; virality: number; uniqueness: number };
+};
+
+type TokenUsage = {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+};
+
+type AgentResult = {
+  analysis: {
+    topics: string[];
+    formats: string[];
+    hooks: string[];
+    tone: string;
+    high_performing_insights?: string;
+  };
+  avoid: string[];
+  ideas: Idea[];
+  best_ideas: Idea[];
+  tokenUsage?: TokenUsage;
+};
+
+type HistoryEntry = {
+  id: string;
+  accountId: string;
+  generatedAt: string;
+  niche: string;
+  contentType: string;
+  userPrompt: string;
+  ideaCount: number;
+  result: AgentResult;
+};
+
+type ScrapedContent = {
+  title: string;
+  description?: string;
+  stats?: string;
+};
+
+type ScrapeResult = {
+  profile: { name: string; bio: string };
+  total_contents: number;
+  contents: ScrapedContent[];
+};
+
+// ---- Preset Accounts ----
+const ACCOUNTS: {
+  id: string;
+  label: string;
+  username: string;
+  url: string;
+  avatar: string;
+  niche: string;
+}[] = [
+  {
+    id: "acc1",
+    label: "@pumppp97",
+    username: "@pumppp97",
+    url: "https://www.lemon8-app.com/@pumppp97",
+    avatar: "https://p16-lemon8-sign-sg.tiktokcdn.com/user-avatar-alisg/ee0a08ee00810715b5e30d066014d58a~tplv-sdweummd6v-shrink:1200:0:q75.webp?lk3s=d32e6450&source=ui_avatar&x-expires=1778587200&x-signature=6DrRjaYhmWQ0QZ0JFq4BiqdN7g4%3D",
+    niche: "lifestyle",
+  },
+  {
+    id: "acc2",
+    label: "@ctrllifee",
+    username: "@ctrllifee",
+    url: "https://www.lemon8-app.com/@ctrllifee",
+    avatar: "https://p16-lemon8-sign-sg.tiktokcdn.com/user-avatar-alisg/e4d0c0e114f12314a77a52844d549e4c~tplv-sdweummd6v-shrink:1200:0:q75.webp?lk3s=d32e6450&source=ui_avatar&x-expires=1778587200&x-signature=C%2FJAG%2F%2BepuCp6eQ0dAQ7%2Fj8%2B6jM%3D",
+    niche: "beauty",
+  },
+  {
+    id: "acc3",
+    label: "@sha_zfleen",
+    username: "@sha_zfleen",
+    url: "https://www.lemon8-app.com/@sha_zfleen",
+    avatar: "https://p16-lemon8-sign-sg.tiktokcdn.com/user-avatar-alisg/facc20fd0570d54c2e293cd3ef79ae4c~tplv-sdweummd6v-shrink:1200:0:q75.webp?lk3s=d32e6450&source=ui_avatar&x-expires=1778587200&x-signature=SBFntSLXoY%2FGSBDfx3IOwwnODwg%3D",
+    niche: "fashion",
+  },
+  {
+    id: "acc4",
+    label: "@_babybunny88",
+    username: "@_babybunny88",
+    url: "https://www.lemon8-app.com/@_babybunny88",
+    avatar: "https://p16-lemon8-sign-sg.tiktokcdn.com/user-avatar-alisg/c271ecdfa64bcc09d469b6a46b82e122~tplv-sdweummd6v-shrink:1200:0:q75.webp?lk3s=d32e6450&source=ui_avatar&x-expires=1778587200&x-signature=zMDDs1rIhS9%2BBj9mWQWmDNu7SO8%3D",
+    niche: "food",
+  },
+  {
+    id: "acc5",
+    label: "@tofufu11",
+    username: "@tofufu11",
+    url: "https://www.lemon8-app.com/@tofufu11",
+    avatar: "https://p16-lemon8-sign-sg.tiktokcdn.com/user-avatar-alisg/e1fa7f202e6f72a2f45f7da8e7f680a2~tplv-sdweummd6v-shrink:1200:0:q75.webp?lk3s=d32e6450&source=ui_avatar&x-expires=1778587200&x-signature=1UIwzSsT5SAZY%2BhOO2BaRugVcR4%3D",
+    niche: "travel",
+  },
+  {
+    id: "acc6",
+    label: "@winterr597",
+    username: "@winterr597",
+    url: "https://www.lemon8-app.com/@winterr597",
+    avatar: "https://p16-lemon8-sign-sg.tiktokcdn.com/user-avatar-alisg/67558cbb71b623e060ec24baa6b37938~tplv-sdweummd6v-shrink:1200:0:q75.webp?lk3s=d32e6450&source=ui_avatar&x-expires=1778587200&x-signature=phu67jsZTGCUC58Fth8aqc77bOQ%3D",
+    niche: "wellness",
+  },
+];
+
+const CONTENT_TYPES = [
+  { label: "🔥 Viral Hook", value: "viral_hook" },
+  { label: "📖 Story / Experience", value: "story" },
+  { label: "📋 List / Tips", value: "list_tips" },
+  { label: "🎯 Tutorial / How-to", value: "tutorial" },
+  { label: "💬 Opinion / Review", value: "opinion" },
+  { label: "✨ Aesthetic / Vibe", value: "aesthetic" },
+  { label: "❓ Question / Poll", value: "question" },
+  { label: "🆚 Compare / Contrast", value: "compare" },
+];
+
+// ---- Sub-components ----
+function ScoreBar({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center gap-2 text-sm">
+      <span className="w-24 text-gray-400 capitalize text-xs">{label}</span>
+      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-orange-400 to-pink-500 rounded-full transition-all duration-700"
+          style={{ width: `${value * 10}%` }}
+        />
+      </div>
+      <span className="w-6 text-right text-gray-500 text-xs font-mono">{value}</span>
+    </div>
+  );
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button
+      onClick={handleCopy}
+      className="text-xs px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-gray-400 hover:text-gray-700 whitespace-nowrap"
+    >
+      {copied ? "✓ Copied!" : "Copy caption"}
+    </button>
+  );
+}
+
+function IdeaCard({ idea, isBest }: { idea: Idea; isBest: boolean }) {
+  return (
+    <div
+      className={`rounded-2xl border p-5 flex flex-col gap-4 bg-white transition-shadow hover:shadow-md ${
+        isBest ? "border-orange-300 shadow-sm" : "border-gray-100"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="font-semibold text-gray-900 leading-snug text-sm">{idea.title}</h3>
+        {isBest && (
+          <span className="shrink-0 text-xs px-2.5 py-1 bg-gradient-to-r from-orange-400 to-pink-500 text-white rounded-full font-medium">
+            ⭐ Top pick
+          </span>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <span className="text-xs px-2.5 py-1 bg-orange-50 border border-orange-100 rounded-full text-orange-600">
+          {idea.type}
+        </span>
+        <span className="text-xs px-2.5 py-1 bg-gray-50 border border-gray-100 rounded-full text-gray-500">
+          {idea.angle}
+        </span>
+      </div>
+      <p className="text-sm text-gray-500 italic border-l-2 border-orange-200 pl-3 leading-relaxed">
+        "{idea.hook}"
+      </p>
+      <div className="bg-gray-50 rounded-xl p-4">
+        <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{idea.caption}</p>
+      </div>
+      <div className="flex items-end justify-between gap-4">
+        <div className="flex-1 flex flex-col gap-1.5">
+          {Object.entries(idea.score).map(([k, v]) => (
+            <ScoreBar key={k} label={k} value={v} />
+          ))}
+        </div>
+        <CopyButton text={idea.caption} />
+      </div>
+    </div>
+  );
+}
+
+function HistoryEntryCard({ entry }: { entry: HistoryEntry }) {
+  const [expanded, setExpanded] = useState(false);
+  const bestTitles = new Set(entry.result.best_ideas.map((b) => b.title));
+
+  return (
+    <div className="rounded-2xl border border-gray-100 bg-white overflow-hidden">
+      <button
+        onClick={() => setExpanded((v) => !v)}
+        className="w-full p-4 flex items-center justify-between gap-3 hover:bg-gray-50 transition-colors text-left"
+      >
+        <div className="flex flex-col gap-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs px-2 py-0.5 bg-orange-50 text-orange-600 border border-orange-100 rounded-full font-medium">
+              {entry.contentType.replace("_", " ")}
+            </span>
+            <span className="text-xs text-gray-400">
+              {entry.result.ideas.length} ideas · {entry.result.best_ideas.length} top picks
+            </span>
+            {entry.ideaCount && entry.ideaCount !== entry.result.ideas.length && (
+              <span className="text-xs text-gray-300">(requested {entry.ideaCount})</span>
+            )}
+          </div>
+          <p className="text-xs text-gray-400">
+            {new Date(entry.generatedAt).toLocaleDateString("th-TH", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+          {entry.userPrompt && (
+            <p className="text-xs text-gray-500 truncate italic">"{entry.userPrompt}"</p>
+          )}
+        </div>
+        <span className="text-gray-300 text-xs shrink-0">{expanded ? "▲" : "▼"}</span>
+      </button>
+
+      {expanded && (
+        <div className="border-t border-gray-50 p-4 flex flex-col gap-4">
+          {/* Analysis summary */}
+          <div className="bg-gray-50 rounded-xl p-3 flex flex-col gap-2">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Analysis</p>
+            <p className="text-xs text-gray-600">
+              <span className="font-medium">Topics:</span> {entry.result.analysis.topics.join(", ")}
+            </p>
+            <p className="text-xs text-gray-600">
+              <span className="font-medium">Tone:</span> {entry.result.analysis.tone}
+            </p>
+            {entry.result.analysis.high_performing_insights && (
+              <p className="text-xs text-gray-600">
+                <span className="font-medium">Insight:</span>{" "}
+                {entry.result.analysis.high_performing_insights}
+              </p>
+            )}
+          </div>
+
+          {/* All ideas */}
+          <div className="flex flex-col gap-3">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+              All {entry.result.ideas.length} ideas
+            </p>
+            {entry.result.ideas.map((idea) => (
+              <IdeaCard key={idea.title} idea={idea} isBest={bestTitles.has(idea.title)} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---- Token Usage Bar Component ----
+function TokenUsageBar({
+  usage,
+  limit,
+}: {
+  usage: TokenUsage;
+  limit: number;
+}) {
+  const pct = Math.min((usage.total_tokens / limit) * 100, 100);
+  const isWarn = pct >= 70;
+  const isDanger = pct >= 90;
+
+  const color = isDanger
+    ? "from-red-400 to-red-500"
+    : isWarn
+    ? "from-orange-400 to-amber-400"
+    : "from-green-400 to-emerald-400";
+
+  const bgColor = isDanger
+    ? "bg-red-50 border-red-100"
+    : isWarn
+    ? "bg-orange-50 border-orange-100"
+    : "bg-green-50 border-green-100";
+
+  const textColor = isDanger ? "text-red-500" : isWarn ? "text-orange-500" : "text-green-600";
+
+  return (
+    <div className={`rounded-xl border p-4 flex flex-col gap-2.5 ${bgColor}`}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+            Token Usage
+          </span>
+          {isDanger && (
+            <span className="text-xs px-2 py-0.5 bg-red-100 text-red-500 rounded-full font-medium animate-pulse">
+              ⚠ ใกล้เต็ม
+            </span>
+          )}
+          {isWarn && !isDanger && (
+            <span className="text-xs px-2 py-0.5 bg-orange-100 text-orange-500 rounded-full font-medium">
+              ⚡ เฝ้าระวัง
+            </span>
+          )}
+        </div>
+        <span className={`text-sm font-bold tabular-nums ${textColor}`}>
+          {pct.toFixed(1)}%
+        </span>
+      </div>
+
+      {/* Bar */}
+      <div className="h-2 bg-white rounded-full overflow-hidden shadow-inner">
+        <div
+          className={`h-full bg-gradient-to-r ${color} rounded-full transition-all duration-700`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+
+      {/* Numbers */}
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-xs text-gray-400">Prompt</span>
+          <span className="text-xs font-semibold text-gray-700 tabular-nums">
+            {usage.prompt_tokens.toLocaleString()}
+          </span>
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-xs text-gray-400">Completion</span>
+          <span className="text-xs font-semibold text-gray-700 tabular-nums">
+            {usage.completion_tokens.toLocaleString()}
+          </span>
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-xs text-gray-400">Total / Limit</span>
+          <span className={`text-xs font-bold tabular-nums ${textColor}`}>
+            {usage.total_tokens.toLocaleString()} / {limit.toLocaleString()}
+          </span>
+        </div>
+      </div>
+
+      {isDanger && (
+        <p className="text-xs text-red-400 text-center leading-relaxed">
+          Token ใกล้ถึง limit แล้ว — ถ้า gen ต่อ AI อาจตัด JSON กลางคัน
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ---- Scraped Posts Modal ----
+function ScrapedPostsModal({
+  contents,
+  profileName,
+  onClose,
+}: {
+  contents: ScrapedContent[];
+  profileName: string;
+  onClose: () => void;
+}) {
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"default" | "likes">("default");
+
+  const filtered = contents
+    .filter((p) =>
+      search.trim() === "" ||
+      p.title.toLowerCase().includes(search.toLowerCase()) ||
+      (p.description ?? "").toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortBy !== "likes") return 0;
+      const aNum = parseInt((a.stats ?? "0").replace(/,/g, ""), 10) || 0;
+      const bNum = parseInt((b.stats ?? "0").replace(/,/g, ""), 10) || 0;
+      return bNum - aNum;
+    });
+
+  // Close on backdrop click
+  const handleBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
+      onClick={handleBackdrop}
+    >
+      <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-50 shrink-0">
+          <div>
+            <p className="font-semibold text-gray-900 text-sm">{profileName}</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {filtered.length} / {contents.length} posts
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center text-gray-500 text-sm"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Controls */}
+        <div className="px-5 py-3 flex gap-2 shrink-0">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="ค้นหา post..."
+            className="flex-1 text-sm px-3 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-orange-300 placeholder-gray-300"
+          />
+          <button
+            onClick={() => setSortBy(sortBy === "likes" ? "default" : "likes")}
+            className={`shrink-0 px-3 py-2 text-xs rounded-xl border transition-all font-medium ${
+              sortBy === "likes"
+                ? "bg-orange-50 border-orange-300 text-orange-600"
+                : "border-gray-200 text-gray-500 hover:border-gray-300"
+            }`}
+          >
+            ♥ Sort by Likes
+          </button>
+        </div>
+
+        {/* Posts list */}
+        <div className="flex-1 overflow-y-auto px-5 pb-5 flex flex-col gap-2">
+          {filtered.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-8">ไม่พบ post ที่ค้นหา</p>
+          ) : (
+            filtered.map((post, i) => (
+              <div
+                key={i}
+                className="rounded-xl border border-gray-100 bg-gray-50 p-3 flex flex-col gap-1.5 hover:border-gray-200 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-medium text-gray-800 leading-snug flex-1">
+                    {post.title}
+                  </p>
+                  {post.stats && (
+                    <span className="shrink-0 text-xs text-pink-400 bg-pink-50 border border-pink-100 px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
+                      ♥ {post.stats}
+                    </span>
+                  )}
+                </div>
+                {post.description && (
+                  <p className="text-xs text-gray-500 leading-relaxed">{post.description}</p>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+export default function Home() {
+  // Account selection
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
+  const [view, setView] = useState<"accounts" | "detail">("accounts");
+
+  // Per-account state
+  const [scrapeResults, setScrapeResults] = useState<Record<string, ScrapeResult>>({});
+  const [scraping, setScraping] = useState(false);
+  const [scrapeError, setScrapeError] = useState<string | null>(null);
+
+  // Generate options
+  const [niche, setNiche] = useState("lifestyle");
+  const [contentType, setContentType] = useState("viral_hook");
+  const [userPrompt, setUserPrompt] = useState("");
+  const [ideaCount, setIdeaCount] = useState(5);
+
+  // Generation state
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<AgentResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [tokenUsage, setTokenUsage] = useState<TokenUsage | null>(null);
+  const [tokenLimit, setTokenLimit] = useState<number>(100000);
+
+  // Modal
+  const [showScrapedModal, setShowScrapedModal] = useState(false);
+
+  // History per account
+  const [history, setHistory] = useState<Record<string, HistoryEntry[]>>({});
+  const [showHistory, setShowHistory] = useState(false);
+
+  const selectedAccount = ACCOUNTS.find((a) => a.id === selectedAccountId) ?? null;
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  // When switching account, sync niche
+  useEffect(() => {
+    if (selectedAccount) {
+      setNiche(selectedAccount.niche);
+      setResult(null);
+      setError(null);
+      setScrapeError(null);
+      setTokenUsage(null);
+    }
+  }, [selectedAccountId]);
+
+  async function fetchHistory() {
+    try {
+      const res = await fetch("/api/history");
+      const json = await res.json();
+      if (json.success) setHistory(json.data);
+    } catch {
+      /* silent */
+    }
+  }
+
+  async function handleScrape() {
+    if (!selectedAccount) return;
+    setScraping(true);
+    setScrapeError(null);
+    try {
+      const res = await fetch("/api/scrape", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: selectedAccount.url }),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || "Scrape failed");
+      setScrapeResults((prev) => ({ ...prev, [selectedAccount.id]: json }));
+    } catch (err) {
+      setScrapeError(err instanceof Error ? err.message : "Scrape failed");
+    } finally {
+      setScraping(false);
+    }
+  }
+
+  async function handleGenerate() {
+    if (!selectedAccount) return;
+    setLoading(true);
+    setResult(null);
+    setError(null);
+    try {
+      const scrapeResult = scrapeResults[selectedAccount.id];
+      const body: Record<string, unknown> = {
+        niche,
+        contentType,
+        userPrompt: userPrompt.trim(),
+        accountId: selectedAccount.id,
+        ideaCount,
+      };
+      if (scrapeResult) body.scrapedContents = scrapeResult.contents;
+
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json();
+      if (!json.success) {
+        setError(json.error || "Generation failed");
+        return;
+      }
+      setResult(json.data);
+      if (json.data.tokenUsage) setTokenUsage(json.data.tokenUsage);
+      if (json.tokenLimit) setTokenLimit(json.tokenLimit);
+      fetchHistory();
+    } catch {
+      setError("Cannot connect to server");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const currentScrape = selectedAccount ? scrapeResults[selectedAccount.id] : null;
+  const currentHistory = selectedAccount ? (history[selectedAccount.id] ?? []) : [];
+  const bestTitles = new Set(result?.best_ideas.map((b) => b.title) ?? []);
+
+  // ---- Account List View ----
+  if (view === "accounts") {
+    return (
+      <main className="min-h-screen bg-[#fdf8f5]">
+        <div className="max-w-2xl mx-auto px-4 py-12 flex flex-col gap-8">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+              🍋 Lemon8 Content Agent
+            </h1>
+            <p className="text-sm text-gray-400 mt-1">
+              เลือก Account เพื่อจัดการ Content
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {ACCOUNTS.map((acc) => {
+              const hasScrape = !!scrapeResults[acc.id];
+              const histCount = (history[acc.id] ?? []).length;
+              return (
+                <button
+                  key={acc.id}
+                  onClick={() => {
+                    setSelectedAccountId(acc.id);
+                    setView("detail");
+                  }}
+                  className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3 hover:border-orange-300 hover:shadow-md transition-all text-left group"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-300 to-pink-400 flex items-center justify-center text-white font-bold text-sm">
+                    <Image
+  src={acc.avatar}
+  alt={acc.label}
+  width={48}
+  height={48}
+  className="w-12 h-12 rounded-2xl object-cover"
+/>
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <p className="font-semibold text-gray-900 text-sm group-hover:text-orange-600 transition-colors">
+                      {acc.label}
+                    </p>
+                    <p className="text-xs text-gray-400">{acc.username}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="text-xs px-2 py-0.5 bg-gray-50 border border-gray-100 rounded-full text-gray-400 capitalize">
+                      {acc.niche}
+                    </span>
+                    {hasScrape && (
+                      <span className="text-xs px-2 py-0.5 bg-green-50 border border-green-100 rounded-full text-green-500">
+                        ✓ Scraped
+                      </span>
+                    )}
+                    {histCount > 0 && (
+                      <span className="text-xs px-2 py-0.5 bg-orange-50 border border-orange-100 rounded-full text-orange-400">
+                        {histCount} gen
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ---- Account Detail View ----
+  return (
+    <main className="min-h-screen bg-[#fdf8f5]">
+      <div className="max-w-2xl mx-auto px-4 py-12 flex flex-col gap-6">
+
+        {/* Back + Header */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => { setView("accounts"); setResult(null); }}
+            className="text-sm text-gray-400 hover:text-gray-700 transition-colors flex items-center gap-1"
+          >
+            ← Back
+          </button>
+          <div className="flex-1" />
+          <div className="flex items-center gap-2">
+<div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-300 to-pink-400 flex items-center justify-center text-white font-bold text-xs">
+  {selectedAccount?.avatar ? (
+    <Image
+      src={selectedAccount.avatar}
+      alt={selectedAccount?.label || ""}
+      width={32}
+      height={32}
+      className="w-8 h-8 rounded-xl object-cover"
+    />
+  ) : (
+    <div className="w-8 h-8 rounded-xl bg-gray-200" />
+  )}
+</div>
+            <div>
+              <p className="text-sm font-semibold text-gray-900">{selectedAccount?.label}</p>
+              <p className="text-xs text-gray-400">{selectedAccount?.username}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Card */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col gap-6 shadow-sm">
+
+          {/* Scrape Section */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Step 1 — Sync Profile Data
+              </label>
+              {currentScrape && (
+                <span className="text-xs text-green-500 font-medium">
+                  ✓ {currentScrape.total_contents} posts synced
+                </span>
+              )}
+            </div>
+
+            <div className="flex gap-2 items-center">
+              <div className="flex-1 text-sm px-3.5 py-2.5 rounded-xl border border-gray-100 bg-gray-50 text-gray-400 truncate">
+                {selectedAccount?.url}
+              </div>
+              <button
+                onClick={handleScrape}
+                disabled={scraping}
+                className="shrink-0 px-4 py-2.5 text-sm rounded-xl bg-gray-900 text-white hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors whitespace-nowrap font-medium"
+              >
+                {scraping ? "Syncing..." : currentScrape ? "Re-sync" : "Sync Now"}
+              </button>
+            </div>
+
+            {scrapeError && (
+              <p className="text-xs text-red-400 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                {scrapeError}
+              </p>
+            )}
+
+            {currentScrape && (
+              <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-gray-800">
+                    {currentScrape.profile.name}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400 bg-white border border-gray-100 px-2 py-0.5 rounded-full">
+                      {currentScrape.total_contents} posts
+                    </span>
+                    <button
+                      onClick={() => setShowScrapedModal(true)}
+                      className="text-xs text-orange-500 hover:text-orange-700 font-medium transition-colors border border-orange-200 bg-orange-50 hover:bg-orange-100 px-2.5 py-0.5 rounded-full"
+                    >
+                      ดูทั้งหมด →
+                    </button>
+                  </div>
+                </div>
+                {currentScrape.profile.bio && (
+                  <p className="text-xs text-gray-400 leading-relaxed line-clamp-2">
+                    {currentScrape.profile.bio}
+                  </p>
+                )}
+                {/* Top 5 preview */}
+                <div className="flex flex-col gap-1 mt-1">
+                  {currentScrape.contents.slice(0, 5).map((post, i) => (
+                    <div key={i} className="flex items-center justify-between gap-2 py-0.5">
+                      <p className="text-xs text-gray-600 truncate flex-1">{post.title}</p>
+                      {post.stats && (
+                        <span className="text-xs text-pink-400 shrink-0 font-medium">♥ {post.stats}</span>
+                      )}
+                    </div>
+                  ))}
+                  {currentScrape.contents.length > 5 && (
+                    <button
+                      onClick={() => setShowScrapedModal(true)}
+                      className="text-xs text-gray-400 hover:text-orange-500 transition-colors text-left mt-1"
+                    >
+                      + {currentScrape.contents.length - 5} posts อีก — กดเพื่อดูทั้งหมด
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="border-t border-gray-50" />
+
+          {/* Content Type */}
+          <div className="flex flex-col gap-3">
+            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Step 2 — ประเภท Content
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {CONTENT_TYPES.map((ct) => (
+                <button
+                  key={ct.value}
+                  onClick={() => setContentType(ct.value)}
+                  className={`text-sm px-3 py-2.5 rounded-xl border transition-all text-left ${
+                    contentType === ct.value
+                      ? "bg-orange-50 border-orange-300 text-orange-700 font-medium"
+                      : "bg-white text-gray-600 border-gray-100 hover:border-gray-300"
+                  }`}
+                >
+                  {ct.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-50" />
+
+          {/* Idea Count */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Step 3 — จำนวน Idea ที่ต้องการ
+              </label>
+              <span className="text-sm font-bold text-orange-500 tabular-nums w-6 text-right">
+                {ideaCount}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={15}
+              value={ideaCount}
+              onChange={(e) => setIdeaCount(Number(e.target.value))}
+              className="w-full h-2 rounded-full appearance-none cursor-pointer accent-orange-400 bg-gray-100"
+            />
+            <div className="flex justify-between text-xs text-gray-300 px-0.5">
+              {[1, 3, 5, 7, 10, 15].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setIdeaCount(n)}
+                  className={`transition-colors ${
+                    ideaCount === n ? "text-orange-500 font-semibold" : "hover:text-gray-500"
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-50" />
+
+          {/* Niche */}
+          <div className="flex flex-col gap-3">
+            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Step 4 — Niche / หมวดหมู่
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {["lifestyle","beauty","fashion","food","travel","wellness","finance","productivity"].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setNiche(n)}
+                  className={`text-sm px-3.5 py-1.5 rounded-full border capitalize transition-all ${
+                    niche === n
+                      ? "bg-gray-900 text-white border-gray-900"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-50" />
+
+          {/* User Prompt */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Step 5 — เพิ่ม Prompt (ไม่บังคับ)
+              </label>
+              <span className="text-xs text-gray-300">Optional</span>
+            </div>
+            <textarea
+              value={userPrompt}
+              onChange={(e) => setUserPrompt(e.target.value)}
+              placeholder="เช่น: อยากให้เน้นกลุ่มคนวัยทำงาน, ใส่ trend ช่วงหน้าร้อน, ให้ดูมีความเป็นไทย..."
+              rows={3}
+              className="w-full text-sm px-3.5 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-orange-300 placeholder-gray-300 text-gray-800 resize-none leading-relaxed"
+            />
+          </div>
+
+          <div className="border-t border-gray-50" />
+
+          {/* Generate */}
+          <button
+            onClick={handleGenerate}
+            disabled={loading}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-400 to-pink-500 text-white text-sm font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+          >
+            {loading
+              ? "กำลังคิด Idea..."
+              : currentScrape
+              ? `✨ Generate จาก ${currentScrape.profile.name}`
+              : "✨ Generate Content Ideas"}
+          </button>
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div className="rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-500">
+            {error}
+          </div>
+        )}
+
+        {/* Loading skeleton */}
+        {loading && (
+          <div className="flex flex-col gap-4">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-gray-100 bg-white p-5 flex flex-col gap-3 animate-pulse"
+              >
+                <div className="h-4 bg-gray-100 rounded-full w-3/4" />
+                <div className="h-3 bg-gray-100 rounded-full w-1/2" />
+                <div className="h-20 bg-gray-50 rounded-xl" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Results */}
+        {result && !loading && (
+          <div className="flex flex-col gap-6">
+            <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+                Analysis
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: "Topics", value: result.analysis.topics.join(", ") },
+                  { label: "Formats", value: result.analysis.formats.join(", ") },
+                  { label: "Hooks", value: result.analysis.hooks.join(", ") },
+                  { label: "Tone", value: result.analysis.tone },
+                ].map((item) => (
+                  <div key={item.label} className="flex flex-col gap-0.5">
+                    <p className="text-xs text-gray-400">{item.label}</p>
+                    <p className="text-sm text-gray-700">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+              {result.analysis.high_performing_insights && (
+                <div className="pt-2 border-t border-gray-50">
+                  <p className="text-xs text-gray-400 font-medium mb-1">High-performing insights</p>
+                  <p className="text-sm text-gray-600">{result.analysis.high_performing_insights}</p>
+                </div>
+              )}
+              <div className="pt-2 border-t border-gray-50 flex flex-wrap gap-1.5">
+                <span className="text-xs text-gray-400 self-center">Avoid:</span>
+                {result.avoid.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs px-2 py-0.5 bg-red-50 text-red-400 border border-red-100 rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+                {result.ideas.length} Ideas ใหม่
+              </p>
+              {result.ideas.map((idea) => (
+                <IdeaCard
+                  key={idea.title}
+                  idea={idea}
+                  isBest={bestTitles.has(idea.title)}
+                />
+              ))}
+            </div>
+
+            {/* Token Usage — shown after generation */}
+            {tokenUsage && (
+              <TokenUsageBar usage={tokenUsage} limit={tokenLimit} />
+            )}
+          </div>
+        )}
+
+        {/* History for this account */}
+        <div className="border-t border-gray-100 pt-6 flex flex-col gap-4">
+          <button
+            onClick={() => setShowHistory((v) => !v)}
+            className="flex items-center justify-between w-full text-sm text-gray-500 hover:text-gray-800 transition-colors"
+          >
+            <span className="font-medium">
+              History ของ {selectedAccount?.label} ({currentHistory.length} ครั้ง)
+            </span>
+            <span className="text-xs">{showHistory ? "▲ Hide" : "▼ Show"}</span>
+          </button>
+          {showHistory && (
+            <div className="flex flex-col gap-3">
+              {currentHistory.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-6">
+                  ยังไม่มี History สำหรับ Account นี้
+                </p>
+              ) : (
+                [...currentHistory]
+                  .reverse()
+                  .map((entry) => <HistoryEntryCard key={entry.id} entry={entry} />)
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Scraped Posts Modal */}
+      {showScrapedModal && currentScrape && (
+        <ScrapedPostsModal
+          contents={currentScrape.contents}
+          profileName={currentScrape.profile.name}
+          onClose={() => setShowScrapedModal(false)}
+        />
+      )}
+    </main>
+  );
+}
+
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+const ACCOUNTS = [
+  { id: "acc1", label: "@pumppp97",     niche: "lifestyle", emoji: "🌸", gens: 3, verified: true  },
+  { id: "acc2", label: "@ctrllifee",    niche: "beauty",    emoji: "💄", gens: 5, verified: true  },
+  { id: "acc3", label: "@sha_zfleen",   niche: "fashion",   emoji: "👗", gens: 2, verified: false },
+  { id: "acc4", label: "@_babybunny88", niche: "food",      emoji: "🍜", gens: 7, verified: true  },
+  { id: "acc5", label: "@tofufu11",     niche: "travel",    emoji: "✈️", gens: 4, verified: false },
+  { id: "acc6", label: "@winterr597",   niche: "wellness",  emoji: "🧘", gens: 1, verified: false },
+];
+
+const POLAROID_DATA = [
+  { emoji: "💑",   caption: "Forever Us 💕",  tape: "#ffb3c6", rotate: -4 },
+  { emoji: "👯‍♀️", caption: "Best Friends!",  tape: "#b3d9ff", rotate:  3 },
+  { emoji: "👰💍", caption: "She Said Yes!",  tape: "#c8f5c8", rotate: -2 },
+  { emoji: "🤪",   caption: "Goofballs 😂",   tape: "#ffe4b3", rotate:  5 },
+];
+
+const VIDEO_SCENES = [
+  { bg: "linear-gradient(160deg,#ff9a56,#ffad7e,#ffd6a8)", emoji: "💃🕺" },
+  { bg: "linear-gradient(160deg,#ff7e8e,#ffa0b0,#ffd6df)", emoji: "💑✨" },
+];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function triggerFlash() {
   const flash = document.createElement("div");
@@ -23,545 +1051,43 @@ function triggerFlash() {
   setTimeout(() => flash.remove(), 450);
 }
 
-
-// ══════════════════════════════════════════════════════════════════════════
-// IMMERSIVE SECTION COMPONENTS
-// ══════════════════════════════════════════════════════════════════════════
-
-function spawnSparkle(x: number, y: number) {
-  const emojis = ["✨","💕","⭐","🌸","💖","💛"];
-  const el = document.createElement("div");
-  el.className = "sparkle-pop";
-  el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-  const sx = (Math.random() - 0.5) * 60;
-  const sy = -(28 + Math.random() * 48);
-  el.style.cssText = `left:${x}px;top:${y}px;--sx:${sx}px;--sy:${sy}px;`;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 950);
-}
-
-const CORRIDOR_QUOTES = [
-  "ทุกช่วงเวลาที่ผ่านไป คือรูปถ่ายที่ไม่เคยจางหาย",
-  "some memories float like light through glass",
-  "วินาทีเล็กๆ ที่เราเก็บไว้ คือความรักที่ยิ่งใหญ่",
-  "the camera remembers what the heart cannot let go",
-];
-
-function MemoryTransitionCorridor() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [quoteIdx, setQuoteIdx] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => setQuoteIdx((i) => (i + 1) % CORRIDOR_QUOTES.length), 5000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add("imm-vis"); }, { threshold: 0.1 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const particles = [
-    { left:"8%", top:"22%", size:6, color:"#ffd6e0", delay:0, dur:4 },
-    { left:"20%", top:"65%", size:9, color:"#e8d5f5", delay:0.6, dur:5 },
-    { left:"35%", top:"40%", size:5, color:"#d4eeff", delay:1.1, dur:3.8 },
-    { left:"52%", top:"18%", size:8, color:"#ffb3c6", delay:0.3, dur:4.5 },
-    { left:"68%", top:"72%", size:6, color:"#ffd89b", delay:0.9, dur:4.2 },
-    { left:"80%", top:"35%", size:10, color:"#ffd6e0", delay:0.5, dur:5.2 },
-    { left:"90%", top:"55%", size:5, color:"#e8d5f5", delay:1.4, dur:3.6 },
-    { left:"45%", top:"80%", size:7, color:"#d4eeff", delay:0.7, dur:4.8 },
-  ];
-
-  const timestamps = [
-    { text:"Jan 14 • 3:22pm", top:"14%", delay:0, dur:16 },
-    { text:"Summer 2023 ♡",   top:"28%", delay:3, dur:18 },
-    { text:"Dec 25 🌟",        top:"44%", delay:6, dur:14 },
-    { text:"Our anniversary ✨", top:"60%", delay:2, dur:20 },
-    { text:"First photo ☁️",   top:"75%", delay:5, dur:15 },
-  ];
-
-  return (
-    <div ref={wrapRef} className="corridor-wrap imm-reveal">
-      <div className="corridor-fog" />
-      {timestamps.map((ts, i) => (
-        <div key={i} className="corridor-timestamp"
-          style={{ top: ts.top, animationDuration: `${ts.dur}s`, animationDelay: `${ts.delay}s` }}>
-          {ts.text}
-        </div>
-      ))}
-      {particles.map((p, i) => (
-        <div key={i} className="corridor-particle" style={{
-          left: p.left, top: p.top, width: p.size, height: p.size,
-          background: p.color, animationDuration: `${p.dur}s`, animationDelay: `${p.delay}s`,
-        }} />
-      ))}
-      <p key={quoteIdx} className="corridor-quote">
-        &ldquo;{CORRIDOR_QUOTES[quoteIdx]}&rdquo;
-      </p>
-    </div>
-  );
-}
-
-const DREAM_POLAROIDS = [
-  { emoji:"🌅", caption:"Golden Hour",    rotate:-6, left:"3%",  top:"6%",  z:5 },
-  { emoji:"💐", caption:"First flowers",  rotate: 4, left:"26%", top:"4%",  z:4 },
-  { emoji:"🎡", caption:"Weekend fair",   rotate:-3, left:"52%", top:"10%", z:6 },
-  { emoji:"🍦", caption:"Ice cream date", rotate: 7, left:"70%", top:"5%",  z:3 },
-  { emoji:"🌙", caption:"Late night",     rotate:-5, left:"8%",  top:"50%", z:7 },
-  { emoji:"☁️", caption:"Cloud watching", rotate: 3, left:"36%", top:"52%", z:5 },
-  { emoji:"🎠", caption:"Merry-go-round", rotate:-7, left:"60%", top:"48%", z:4 },
-  { emoji:"🌸", caption:"Cherry blossom", rotate: 5, left:"78%", top:"46%", z:6 },
-];
-
-function DreamExplorationSpace() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [positions, setPositions] = useState(() => DREAM_POLAROIDS.map(() => ({ x: 0, y: 0 })));
-  const dragging = useRef<{ idx: number; ox: number; oy: number } | null>(null);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add("imm-vis"); }, { threshold: 0.08 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      if (!dragging.current) return;
-      const { idx, ox, oy } = dragging.current;
-      setPositions((prev) => { const n = [...prev]; n[idx] = { x: e.clientX - ox, y: e.clientY - oy }; return n; });
-    };
-    const onTMove = (e: TouchEvent) => {
-      if (!dragging.current) return;
-      const t = e.touches[0];
-      const { idx, ox, oy } = dragging.current;
-      setPositions((prev) => { const n = [...prev]; n[idx] = { x: t.clientX - ox, y: t.clientY - oy }; return n; });
-    };
-    const onUp = () => { dragging.current = null; };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    window.addEventListener("touchmove", onTMove, { passive: false });
-    window.addEventListener("touchend", onUp);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-      window.removeEventListener("touchmove", onTMove);
-      window.removeEventListener("touchend", onUp);
-    };
-  }, []);
-
-  const stickers = [
-    { emoji:"💕", left:"17%", top:"38%", rot:"-12deg", dur:3.2 },
-    { emoji:"⭐", left:"50%", top:"30%", rot:"8deg",   dur:2.8 },
-    { emoji:"🌈", left:"84%", top:"26%", rot:"15deg",  dur:4.0 },
-    { emoji:"✨", left:"6%",  top:"74%", rot:"-6deg",  dur:3.5 },
-    { emoji:"🦋", left:"69%", top:"76%", rot:"20deg",  dur:2.6 },
-  ];
-
-  return (
-    <section ref={sectionRef} className="dream-section imm-reveal">
-      <h2 className="dream-heading">✦ สำรวจความทรงจำที่ล่องลอย</h2>
-      <p className="dream-sub">ลากโพลารอยด์ไปไว้ที่ใดก็ได้ที่หัวใจต้องการ 🌸</p>
-      <div className="dream-space">
-        {stickers.map((s, i) => (
-          <div key={i} className="dream-sticker"
-            style={{ left: s.left, top: s.top, ["--sr" as string]: s.rot,
-              animationDuration: `${s.dur}s`, animationDelay: `${i * 0.5}s` }}>
-            {s.emoji}
-          </div>
-        ))}
-        {DREAM_POLAROIDS.map((p, idx) => (
-          <div key={idx} className="dream-polaroid"
-            style={{
-              left: p.left, top: p.top, zIndex: p.z,
-              transform: `rotate(${p.rotate}deg) translate(${positions[idx].x}px, ${positions[idx].y}px)`,
-            }}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              dragging.current = { idx, ox: e.clientX - positions[idx].x, oy: e.clientY - positions[idx].y };
-            }}
-            onTouchStart={(e) => {
-              const t = e.touches[0];
-              dragging.current = { idx, ox: t.clientX - positions[idx].x, oy: t.clientY - positions[idx].y };
-            }}
-            onClick={(e) => spawnSparkle(e.clientX, e.clientY)}
-          >
-            <div className="dp-img">{p.emoji}</div>
-            <div className="dp-caption">{p.caption}</div>
-          </div>
-        ))}
-      </div>
-      <p className="dream-hint">✦ กดที่โพลารอยด์เพื่อสัมผัสความทรงจำ — ลากเพื่อจัดเรียง ✦</p>
-    </section>
-  );
-}
-
-const CONST_STARS = [
-  { id:"cs1", label:"พบกันครั้งแรก",  emoji:"🌟", x:"18%", y:"22%", size:46, color:"#ffd89b", memory:"วันแรกที่เราเจอกัน 💛 Jan 14" },
-  { id:"cs2", label:"วันเกิดสุดพิเศษ", emoji:"🎂", x:"42%", y:"12%", size:42, color:"#ffb3c6", memory:"เค้กสตรอว์เบอร์รี่ 🎂 April" },
-  { id:"cs3", label:"ทริปทะเล",        emoji:"🌊", x:"67%", y:"20%", size:50, color:"#d4eeff", memory:"คลื่นทะเลและพระอาทิตย์ตก 🌅" },
-  { id:"cs4", label:"หิมะครั้งแรก",   emoji:"❄️", x:"26%", y:"56%", size:38, color:"#e8d5f5", memory:"หิมะตกครั้งแรกในชีวิต ❄️" },
-  { id:"cs5", label:"วันพิเศษ",        emoji:"💍", x:"54%", y:"53%", size:54, color:"#ff85a1", memory:"วันที่สวยที่สุดในชีวิต 💍" },
-  { id:"cs6", label:"ร้านกาแฟ",        emoji:"☕", x:"77%", y:"58%", size:36, color:"#ffd89b", memory:"ลาเต้อุ่นๆ และเสียงฝน ☕" },
-];
-const CONST_LINES = [["cs1","cs2"],["cs2","cs3"],["cs1","cs4"],["cs4","cs5"],["cs5","cs3"],["cs5","cs6"],["cs2","cs5"]];
-
-function MemoryConstellationMap() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [popup, setPopup] = useState<{ text: string; x: string; y: string } | null>(null);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add("imm-vis"); }, { threshold: 0.08 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const bgStars = Array.from({ length: 55 }, (_, i) => ({
-    left: `${(i * 1.84 + Math.sin(i) * 3) % 100}%`,
-    top:  `${(i * 1.63 + Math.cos(i) * 4) % 100}%`,
-    size: 1 + (i % 3) * 0.7,
-    delay: i * 0.14, dur: 2 + (i % 4),
-  }));
-
-  const getLine = (a: typeof CONST_STARS[0], b: typeof CONST_STARS[0]) => {
-    const fx = parseFloat(a.x), fy = parseFloat(a.y);
-    const tx = parseFloat(b.x), ty = parseFloat(b.y);
-    const dx = tx - fx, dy = ty - fy;
-    const len = Math.sqrt(dx*dx + dy*dy);
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    return { left:`${fx}%`, top:`${fy}%`, width:`${len}%`, transform:`rotate(${angle}deg)` };
-  };
-
-  return (
-    <section ref={sectionRef} className="constellation-section imm-reveal">
-      {bgStars.map((s,i) => (
-        <div key={i} className="c-bg-star" style={{
-          left:s.left, top:s.top, width:s.size, height:s.size,
-          animationDuration:`${s.dur}s`, animationDelay:`${s.delay}s`,
-        }} />
-      ))}
-      <h2 className="constellation-heading">✦ แผนที่จักรวาลความทรงจำ</h2>
-      <p className="constellation-sub">กดที่ดาวเพื่อค้นพบความทรงจำที่ซ่อนอยู่ ✨</p>
-      <div className="constellation-canvas">
-        {CONST_LINES.map(([a,b], i) => {
-          const from = CONST_STARS.find(s => s.id===a)!;
-          const to   = CONST_STARS.find(s => s.id===b)!;
-          return <div key={i} className="c-line" style={getLine(from, to)} />;
-        })}
-        {CONST_STARS.map((star) => (
-          <div key={star.id} className="c-star"
-            style={{
-              left:star.x, top:star.y, width:star.size, height:star.size,
-              transform:"translate(-50%,-50%)",
-              background:`radial-gradient(circle at 35% 35%, ${star.color}, ${star.color}88)`,
-              boxShadow:`0 0 14px 4px ${star.color}44`, zIndex:5,
-            }}
-            onClick={(e) => {
-              spawnSparkle(e.clientX, e.clientY);
-              setPopup({ text: star.memory, x: star.x, y: star.y });
-              setTimeout(() => setPopup(null), 2800);
-            }}>
-            {star.emoji}
-            <span className="c-star-label">{star.label}</span>
-          </div>
-        ))}
-        {popup && (
-          <div className="c-memory-popup"
-            style={{ left: popup.x, top: `calc(${popup.y} - 52px)` }}>
-            {popup.text}
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
-const MIDNIGHT_TEXTS = [
-  "ในความเงียบของคืน ความทรงจำลอยขึ้นมาเบาๆ",
-  "every photograph holds a piece of the moon",
-  "เราไม่ลืมสิ่งที่รัก แค่เก็บไว้ในที่ที่ปลอดภัย",
-];
-
-function MidnightAmbientSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [textIdx, setTextIdx] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => setTextIdx((i) => (i + 1) % MIDNIGHT_TEXTS.length), 5500);
-    return () => clearInterval(t);
-  }, []);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add("imm-vis"); }, { threshold: 0.1 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const mps = [
-    {l:"9%",t:"18%",s:5,c:"#ffd89b44",d:0,dr:5.2},{l:"25%",t:"70%",s:8,c:"#ffb3c644",d:0.6,dr:4.5},
-    {l:"48%",t:"25%",s:4,c:"#e8d5f544",d:1.1,dr:4},{l:"65%",t:"80%",s:7,c:"#d4eeff44",d:0.4,dr:6},
-    {l:"80%",t:"40%",s:5,c:"#ffffff22",d:0.9,dr:5},{l:"38%",t:"60%",s:9,c:"#ffd89b33",d:1.5,dr:4.8},
-    {l:"72%",t:"15%",s:4,c:"#ffb3c633",d:0.2,dr:5.5},{l:"15%",t:"45%",s:6,c:"#e8d5f533",d:0.8,dr:4.2},
-  ];
-
-  return (
-    <section ref={ref} className="midnight-section imm-reveal">
-      {mps.map((p,i) => (
-        <div key={i} className="midnight-particle" style={{
-          left:p.l, top:p.t, width:p.s, height:p.s, background:p.c,
-          animationDuration:`${p.dr}s`, animationDelay:`${p.d}s`,
-        }} />
-      ))}
-      <div className="midnight-moon" onClick={(e) => spawnSparkle(e.clientX, e.clientY)}>🌙</div>
-      <p key={textIdx} className="midnight-text">{MIDNIGHT_TEXTS[textIdx]}</p>
-    </section>
-  );
-}
-
-const SECRET_NOTES = [
-  { emoji:"💌", text:"มีรูปถ่ายที่ซ่อนอยู่ในห้องนี้\nรูปที่วันที่ฝนตกแล้วเราวิ่งหนีด้วยกัน\nหัวใจยังอุ่นอยู่เสมอ 🌧️" },
-  { emoji:"⭐", text:"every star in your sky\nis a version of us\nthat never stopped being happy ✨" },
-  { emoji:"🎠", text:"จำวันที่เราขึ้นม้าหมุนด้วยกันไหม\nเราหัวเราะจนร้องไห้\nแล้วก็ร้องไห้จนหัวเราะ 🎡" },
-];
-
-function SecretMemoryRoom() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [noteIdx, setNoteIdx] = useState(0);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add("imm-vis"); }, { threshold: 0.08 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const note = SECRET_NOTES[noteIdx];
-  return (
-    <section ref={ref} className="secret-section imm-reveal">
-      {[["#ff85a1","18%","20%","200px"],["#e8d5f5","74%","58%","170px"],["#d4eeff","30%","68%","155px"]].map(([col,l,t,s],i) => (
-        <div key={i} className="secret-bg-orb" style={{
-          background:col, left:l, top:t, width:s, height:s,
-          animationDuration:`${8+i*2}s`, animationDelay:`${i*1.5}s`,
-        }} />
-      ))}
-      <h2 className="secret-heading">🔮 ห้องลับความทรงจำ</h2>
-      <p className="secret-sub">มีบางอย่างซ่อนอยู่ข้างใน — กดเพื่อปลดล็อก</p>
-      <div className="vault-wrap">
-        <div className={`vault-door${isOpen ? " vault-open" : ""}`}
-          onClick={!isOpen ? (e) => { spawnSparkle(e.clientX, e.clientY); setIsOpen(true); } : undefined}>
-          {[70,90,110].map((r,i) => (
-            <div key={i} className="vault-ring" style={{
-              width:r*2, height:r*2, left:"50%", top:"50%",
-              marginLeft:-r, marginTop:-r, animationDelay:`${i*0.8}s`,
-            }} />
-          ))}
-          {isOpen ? "💖" : "🔐"}
-        </div>
-        <div className={`vault-reveal${isOpen ? " vault-shown" : ""}`}>
-          <div className="vault-emoji-row">{note.emoji}</div>
-          <p className="vault-note">{note.text}</p>
-          <button className="vault-btn" onClick={(e) => { spawnSparkle(e.clientX, e.clientY); setNoteIdx((i) => (i+1) % SECRET_NOTES.length); }}>
-            ดูความทรงจำถัดไป →
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-type WinContent = "chat" | "cassette" | "note";
-const INIT_WINS: Array<{ id:string; title:string; x:number; y:number; z:number; content:WinContent }> = [
-  { id:"w1", title:"💬 สนทนาลับ",       x:20,  y:35,  z:3, content:"chat"     },
-  { id:"w2", title:"🎵 Mixtape ของเรา", x:330, y:18,  z:2, content:"cassette" },
-  { id:"w3", title:"📝 Note จากใจ",      x:170, y:195, z:1, content:"note"     },
-];
-const OS_FOLDERS = [
-  { emoji:"📁", label:"รูปถ่าย", left:"5%",  top:"18%" },
-  { emoji:"💌", label:"จดหมาย", left:"5%",  top:"44%" },
-  { emoji:"🎬", label:"วิดีโอ",  left:"5%",  top:"68%" },
-  { emoji:"🌸", label:"พิเศษ",   left:"77%", top:"18%" },
-  { emoji:"⭐", label:"Favs",    left:"77%", top:"44%" },
-];
-
-function SharedMemoryDesktop() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [wins, setWins] = useState(INIT_WINS);
-  const dragging = useRef<{ id:string; ox:number; oy:number } | null>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add("imm-vis"); }, { threshold: 0.08 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      if (!dragging.current) return;
-      const { id, ox, oy } = dragging.current;
-      setWins((prev) => prev.map((w) => w.id===id ? {...w, x:e.clientX-ox, y:e.clientY-oy} : w));
-    };
-    const onUp = () => { dragging.current = null; };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
-  }, []);
-
-  return (
-    <section ref={ref} className="desktop-section imm-reveal">
-      <h2 className="desktop-heading">💾 คลังความทรงจำเก่า</h2>
-      <p className="desktop-sub">ลากหน้าต่างเพื่อสำรวจ — เหมือนเปิดคอมพิวเตอร์เก่าของหัวใจ</p>
-      <div className="desktop-screen">
-        {OS_FOLDERS.map((f,i) => (
-          <div key={i} className="os-folder" style={{ left:f.left, top:f.top }}
-            onClick={(e) => spawnSparkle(e.clientX, e.clientY)}>
-            <div className="os-folder-icon">{f.emoji}</div>
-            <div className="os-folder-label">{f.label}</div>
-          </div>
-        ))}
-        {wins.map((w) => (
-          <div key={w.id} className="os-window" style={{ left:w.x, top:w.y, zIndex:w.z }}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              const maxZ = Math.max(...wins.map(ww => ww.z));
-              setWins((prev) => prev.map(ww => ww.id===w.id ? {...ww, z:maxZ+1} : ww));
-              dragging.current = { id:w.id, ox:e.clientX-w.x, oy:e.clientY-w.y };
-            }}>
-            <div className="os-titlebar">
-              <div className="os-dot" style={{ background:"#ff6b81" }} />
-              <div className="os-dot" style={{ background:"#ffd89b" }} />
-              <div className="os-dot" style={{ background:"#7bed9f" }} />
-              <span style={{ marginLeft:4 }}>{w.title}</span>
-            </div>
-            {w.content==="chat" && (
-              <div className="os-body" style={{ width:205 }}>
-                <div className="chat-bubble">หวัดดีนะ 🌸</div>
-                <div style={{ clear:"both", height:4 }} />
-                <div className="chat-bubble-right">หวัดดีจ้า 💛</div>
-                <div style={{ clear:"both", height:4 }} />
-                <div className="chat-bubble">วันนี้ไปไหนกันดี?</div>
-                <div style={{ clear:"both", height:4 }} />
-                <div className="chat-bubble-right">ไปถ่ายรูปกันเถอะ 📸</div>
-                <div style={{ clear:"both" }} />
-              </div>
-            )}
-            {w.content==="cassette" && (
-              <div className="os-body" style={{ width:195 }}>
-                <div style={{ fontSize:"0.8rem", marginBottom:3, color:"#7a3450" }}>Now Playing:</div>
-                <div style={{ fontWeight:600, color:"#5a2040", fontSize:"0.9rem" }}>Our Song ♡</div>
-                <div className="cassette-player">
-                  <div className="cassette-reel" />
-                  <span style={{ fontSize:"0.7rem", color:"#9b4060" }}>◀◀ ▶ ▶▶</span>
-                  <div className="cassette-reel" />
-                </div>
-                <div style={{ fontSize:"0.65rem", color:"rgba(90,32,64,0.5)", marginTop:5 }}>
-                  01. golden hour<br />02. polaroid love<br />03. sweet nothing
-                </div>
-              </div>
-            )}
-            {w.content==="note" && (
-              <div className="os-body" style={{ width:185, fontStyle:"italic" }}>
-                <div style={{ marginBottom:5, fontWeight:600 }}>จาก: หัวใจที่รัก 💕</div>
-                ขอบคุณที่อยู่ตรงนี้<br />
-                ขอบคุณที่ทำให้ทุกวันธรรมดา<br />
-                กลายเป็นวันพิเศษ ✨
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CosmicAccountBuildup() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add("imm-vis"); }, { threshold: 0.1 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const orbitRings = [130, 170, 208];
-  const planets = [
-    { emoji:"💫", size:34, radius:110, dur:18, phase:0   },
-    { emoji:"🌸", size:28, radius:152, dur:26, phase:120 },
-    { emoji:"⭐", size:26, radius:192, dur:34, phase:240 },
-    { emoji:"💕", size:30, radius:135, dur:22, phase:60  },
-  ];
-
-  return (
-    <section ref={ref} className="cosmic-buildup imm-reveal">
-      {orbitRings.map((r,i) => (
-        <div key={i} className="orbit-ring" style={{
-          width:r*2, height:r*2, left:"50%", top:"50%",
-          marginLeft:-r, marginTop:-r,
-        }} />
-      ))}
-      {planets.map((p,i) => (
-        <div key={i} style={{
-          position:"absolute", width:p.size, height:p.size,
-          borderRadius:"50%", left:"50%", top:"50%",
-          marginLeft:-p.size/2, marginTop:-p.size/2,
-          background:"radial-gradient(circle at 35% 35%, rgba(255,214,224,0.9), rgba(232,213,245,0.7))",
-          display:"flex", alignItems:"center", justifyContent:"center",
-          fontSize:p.size*0.52,
-          boxShadow:"0 0 14px rgba(255,133,161,0.22)",
-          animation:`cosmicOrbit${i} ${p.dur}s linear infinite`,
-        }}>
-          {p.emoji}
-          <style>{`@keyframes cosmicOrbit${i}{from{transform:rotate(${p.phase}deg) translateX(${p.radius}px) rotate(-${p.phase}deg)}to{transform:rotate(${p.phase+360}deg) translateX(${p.radius}px) rotate(-${p.phase+360}deg)}}`}</style>
-        </div>
-      ))}
-      <div style={{
-        position:"absolute", width:70, height:70, borderRadius:"50%",
-        background:"radial-gradient(circle, rgba(255,133,161,0.28), transparent 70%)",
-        left:"50%", top:"50%", transform:"translate(-50%,-50%)", filter:"blur(3px)",
-        animation:"moonGlow2 4s ease-in-out infinite",
-      }} />
-      <h2 className="cosmic-heading" style={{ position:"relative", zIndex:5 }}>
-        ✦ ยินดีต้อนรับสู่จักรวาลของเรา ✦
-      </h2>
-      <p className="cosmic-sub" style={{ position:"relative", zIndex:5 }}>
-        เลือก account เพื่อเริ่มต้นการเดินทางครั้งใหม่
-      </p>
-      <p className="cosmic-cta">↓ เลื่อนลงเพื่อเลือก account ของคุณ ↓</p>
-    </section>
-  );
-}
-
-// ══════════════════════════════════════════════════════════════════════════
+// ── Main Component ────────────────────────────────────────────────────────────
 
 export default function Page() {
-  const router = useRouter();
+  const accountsGridRef = useRef<HTMLDivElement>(null);
   const photoPanelInnerRef = useRef<HTMLDivElement>(null);
   const boothScene1Ref = useRef<HTMLDivElement>(null);
   const boothWrap1Ref = useRef<HTMLDivElement>(null);
 
   // ── Modal / unlock state ─────────────────────────────────────────────────
+  const CORRECT_CODE  = "1234";           // ← เปลี่ยนรหัสที่นี่
+  const STORAGE_KEY   = "booth_unlocked"; // key ใน localStorage
+  const TTL_MS        = 24 * 60 * 60 * 1000; // 24 ชั่วโมง
+
   const [showModal, setShowModal] = useState(false);
   const [passcode, setPasscode]   = useState("");
   const [shake, setShake]         = useState(false);
-  const [passcodeError, setPasscodeError] = useState("");
+  const [error, setError]         = useState("");
   const [success, setSuccess]     = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState<boolean>(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  // ตรวจสอบ localStorage ตอน mount — ถ้า unlock แล้วและไม่หมดอายุ ข้ามหน้ากรอกรหัสได้เลย
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const { ts } = JSON.parse(raw) as { ts: number };
+        if (Date.now() - ts < TTL_MS) {
+          setIsUnlocked(true);
+          return;
+        }
+      }
+    } catch { /* ignore */ }
+  }, []);
 
   function openModal() {
     setPasscode("");
-    setPasscodeError("");
+    setError("");
     setSuccess(false);
     setShowModal(true);
   }
@@ -569,22 +1095,23 @@ export default function Page() {
   function closeModal() {
     setShowModal(false);
     setPasscode("");
-    setPasscodeError("");
+    setError("");
   }
 
   function handlePasscodeInput(key: string) {
     if (key === "⌫") {
       setPasscode((p) => p.slice(0, -1));
-      setPasscodeError("");
+      setError("");
       return;
     }
     if (passcode.length >= 4) return;
     const next = passcode + key;
     setPasscode(next);
-    setPasscodeError("");
+    setError("");
     if (next.length === 4) {
       if (next === CORRECT_CODE) {
         setSuccess(true);
+        // บันทึก timestamp ลง localStorage
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now() }));
         } catch { /* ignore */ }
@@ -595,26 +1122,14 @@ export default function Page() {
           setPasscode("");
         }, 800);
       } else {
-        setPasscodeError("รหัสไม่ถูกต้อง ลองอีกครั้งนะคะ 💔");
+        setError("รหัสไม่ถูกต้อง ลองอีกครั้งนะคะ 💔");
         setShake(true);
         setTimeout(() => { setShake(false); setPasscode(""); }, 600);
       }
     }
   }
-// ── Background / Confetti ────────────────────────────────────────────────
-  // Check localStorage after client mount (avoids SSR hydration mismatch)
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const { ts } = JSON.parse(raw) as { ts: number };
-        if (Date.now() - ts < TTL_MS) {
-          setIsUnlocked(true);
-        }
-      }
-    } catch { /* ignore */ }
-  }, []);
 
+  // ── Background / Confetti ────────────────────────────────────────────────
   useEffect(() => {
     const bokehEl = document.getElementById("bokeh");
     const bokehColors = ["#ffd6e0","#ffe4b5","#e8d5f5","#d4eeff","#d4f5e9","#ffb3c6"];
@@ -930,10 +1445,60 @@ export default function Page() {
     };
   }, []);
 
-  // ── Scroll Reveal ─────────────────────────────────────────────────────────
-  
+  // ── Accounts ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const grid = accountsGridRef.current;
+    if (!grid) return;
+    ACCOUNTS.forEach((acc, i) => {
+      const card = document.createElement("div");
+      card.className = "account-card reveal";
+      card.style.transitionDelay = `${i * 0.08}s`;
+      card.innerHTML = `
+        <div class="acc-avatar" style="position:relative;">
+          <span>${acc.emoji}</span>
+          ${acc.verified ? '<div class="acc-badge">✓</div>' : ""}
+        </div>
+        <div class="acc-name">${acc.label}</div>
+        <div class="acc-niche"><span>${acc.emoji}</span> ${acc.niche}</div>
+        ${acc.gens > 0 ? `<div class="acc-gen-count">${acc.gens} gen</div>` : ""}
+      `;
+      card.addEventListener("click", () => {
+        card.style.transform = "scale(0.95) translateY(-2px)";
+        setTimeout(() => { card.style.transform = ""; }, 150);
+      });
+      grid.appendChild(card);
+    });
+    return () => { if (grid) grid.innerHTML = ""; };
+  }, []);
 
-  // ── Accounts handled in JSX (ACCOUNTS.map) ──────────────────────────────
+  // ── Scroll Reveal ─────────────────────────────────────────────────────────
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => { entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("vis"); }); },
+      { threshold: 0.15 }
+    );
+    document.querySelectorAll(".reveal, .story-step, .section-label, .account-card")
+      .forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // ── Photo Hover ───────────────────────────────────────────────────────────
+  useEffect(() => {
+    document.querySelectorAll<HTMLElement>(".photo-card").forEach((card) => {
+      const baseRot = card.getAttribute("data-rot") || "0deg";
+      const onMove = (e: MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+        const cx   = rect.left + rect.width  / 2;
+        const cy   = rect.top  + rect.height / 2;
+        const dx   = (e.clientX - cx) / (rect.width  / 2);
+        const dy   = (e.clientY - cy) / (rect.height / 2);
+        card.style.transform = `rotate(0deg) rotateX(${-dy * 8}deg) rotateY(${dx * 8}deg) scale(1.04)`;
+      };
+      const onLeave = () => { card.style.transform = `rotate(${baseRot}) scale(1)`; };
+      card.addEventListener("mousemove", onMove);
+      card.addEventListener("mouseleave", onLeave);
+    });
+  }, []);
 
   // ── Particles ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -963,61 +1528,10 @@ export default function Page() {
     return () => { particles.forEach((p) => p.remove()); };
   }, []);
 
-
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("vis");
-            }
-          });
-        },
-        { threshold: 0.15 }
-      );
-      document
-        .querySelectorAll(".reveal, .story-step, .section-label, .account-card")
-        .forEach((el) => observer.observe(el));
-      return () => observer.disconnect();
-    }, 50);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const cards = document.querySelectorAll<HTMLElement>(".photo-card");
-    const cleanup: (() => void)[] = [];
-    cards.forEach((card) => {
-      const onMove = (e: MouseEvent) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-        const rx = ((y - cy) / cy) * -15;
-        const ry = ((x - cx) / cx) * 15;
-        card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.05, 1.05, 1.05)`;
-        card.style.zIndex = "10";
-      };
-      const onLeave = () => {
-        card.style.transform = "";
-        card.style.zIndex = "1";
-      };
-      card.addEventListener("mousemove", onMove);
-      card.addEventListener("mouseleave", onLeave);
-      cleanup.push(() => {
-        card.removeEventListener("mousemove", onMove);
-        card.removeEventListener("mouseleave", onLeave);
-      });
-    });
-    return () => cleanup.forEach((fn) => fn());
-  }, []);
-// ── Render ────────────────────────────────────────────────────────────────
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <>
       <style>{`
-        .zone-screen { container-type: size; }
         *, *::before, *::after {
           box-sizing: border-box;
           margin: 0;
@@ -1957,447 +2471,6 @@ export default function Page() {
           color: var(--text-mid);
           pointer-events: none;
         }
-
-        /* ══════════════════════════════════════════════════════════════
-           IMMERSIVE SECTIONS — Memory World Extensions
-           ══════════════════════════════════════════════════════════════ */
-
-        /* ── 1. MEMORY TRANSITION CORRIDOR ─────────────────────────── */
-        .corridor-wrap {
-          position: relative;
-          height: 300px;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          pointer-events: none;
-          background: linear-gradient(180deg, #fff8f0 0%, #fef0f8 50%, #fff8f0 100%);
-        }
-        .corridor-fog {
-          position: absolute; inset: 0;
-          background: linear-gradient(180deg, transparent 0%, rgba(255,214,224,0.18) 30%, rgba(232,213,245,0.22) 60%, transparent 100%);
-          animation: corridorBreath 7s ease-in-out infinite;
-        }
-        @keyframes corridorBreath {
-          0%,100% { opacity: 0.6; transform: scaleY(1); }
-          50%      { opacity: 1;   transform: scaleY(1.06); }
-        }
-        .corridor-timestamp {
-          position: absolute;
-          font-family: 'Caveat', cursive;
-          font-size: 0.85rem;
-          color: rgba(122,64,96,0.5);
-          letter-spacing: 0.12em;
-          animation: corridorFloat linear infinite;
-          white-space: nowrap;
-          pointer-events: none;
-        }
-        @keyframes corridorFloat {
-          0%   { transform: translateX(-80px) translateY(0px); opacity: 0; }
-          15%  { opacity: 1; }
-          85%  { opacity: 0.7; }
-          100% { transform: translateX(110vw) translateY(-20px); opacity: 0; }
-        }
-        .corridor-quote {
-          position: relative; z-index: 2;
-          font-family: 'Playfair Display', serif;
-          font-style: italic;
-          font-size: clamp(1rem, 3vw, 1.75rem);
-          color: rgba(61,34,53,0.65);
-          text-align: center;
-          max-width: 560px;
-          padding: 0 2rem;
-          animation: corridorQuoteIn 1.4s ease both;
-        }
-        @keyframes corridorQuoteIn {
-          from { opacity: 0; filter: blur(8px); transform: translateY(16px); }
-          to   { opacity: 1; filter: blur(0);   transform: translateY(0); }
-        }
-        .corridor-particle {
-          position: absolute; border-radius: 50%; pointer-events: none;
-          animation: cpFloat ease-in-out infinite;
-        }
-        @keyframes cpFloat {
-          0%,100% { transform: translateY(0) scale(1); opacity: 0.35; }
-          50%      { transform: translateY(-24px) scale(1.2); opacity: 0.65; }
-        }
-
-        /* ── 2. DREAM EXPLORATION SPACE ─────────────────────────────── */
-        .dream-section {
-          position: relative; overflow: hidden;
-          min-height: 580px;
-          display: flex; flex-direction: column; align-items: center;
-          padding: 3.5rem 1rem 4rem;
-          background: linear-gradient(160deg, #fff5fb 0%, #f0eaff 50%, #e8f4ff 100%);
-        }
-        .dream-heading {
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: clamp(1.4rem, 3.5vw, 2.2rem);
-          color: var(--text-dark); text-align: center;
-          margin-bottom: 0.4rem; position: relative; z-index: 2;
-        }
-        .dream-sub {
-          font-family: 'Caveat', cursive; font-size: 1rem;
-          color: rgba(122,64,96,0.65); margin-bottom: 1.5rem; z-index: 2;
-        }
-        .dream-space {
-          position: relative; width: 100%; max-width: 820px; height: 420px; z-index: 2;
-        }
-        .dream-polaroid {
-          position: absolute; background: #fffdf9; border-radius: 4px;
-          padding: 10px 10px 32px;
-          box-shadow: 0 12px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-          cursor: grab; user-select: none;
-          border: 1px solid rgba(0,0,0,0.05);
-          transition: box-shadow 0.2s; will-change: transform;
-        }
-        .dream-polaroid:hover {
-          box-shadow: 0 20px 48px rgba(255,133,161,0.28), 0 4px 16px rgba(0,0,0,0.09);
-          z-index: 50 !important;
-        }
-        .dream-polaroid:active { cursor: grabbing; }
-        .dp-img {
-          width: 120px; height: 110px; border-radius: 2px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 2.8rem;
-          background: linear-gradient(135deg, #ffe4ee, #ffd6e8);
-        }
-        .dp-caption {
-          font-family: 'Caveat', cursive; font-size: 13px;
-          color: #7a3450; text-align: center; margin-top: 8px; line-height: 1.3;
-        }
-        .dream-sticker {
-          position: absolute; font-size: 1.5rem; pointer-events: none;
-          animation: stickerBob ease-in-out infinite;
-          filter: drop-shadow(0 2px 6px rgba(0,0,0,0.13));
-        }
-        @keyframes stickerBob {
-          0%,100% { transform: translateY(0) rotate(var(--sr, 0deg)); }
-          50%      { transform: translateY(-10px) rotate(calc(var(--sr, 0deg) + 5deg)); }
-        }
-        .dream-hint {
-          font-family: 'Caveat', cursive; font-size: 0.85rem;
-          color: rgba(122,64,96,0.45); margin-top: 1.5rem; z-index: 2;
-          animation: hintPulse 3s ease-in-out infinite;
-        }
-        @keyframes hintPulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
-
-        /* ── 3. MEMORY CONSTELLATION MAP ─────────────────────────────── */
-        .constellation-section {
-          position: relative; overflow: hidden;
-          min-height: 560px;
-          background: radial-gradient(ellipse at 50% 40%, #1e0a32 0%, #0d0518 60%, #000010 100%);
-          display: flex; flex-direction: column; align-items: center;
-          padding: 3.5rem 1rem;
-        }
-        .constellation-heading {
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: clamp(1.3rem, 3.2vw, 2rem);
-          color: rgba(255,220,240,0.88); text-align: center;
-          margin-bottom: 0.4rem; z-index: 2; position: relative;
-        }
-        .constellation-sub {
-          font-family: 'Caveat', cursive; font-size: 0.9rem;
-          color: rgba(255,200,230,0.5); margin-bottom: 2rem;
-          z-index: 2; position: relative;
-        }
-        .constellation-canvas {
-          position: relative; width: 100%; max-width: 700px; height: 360px; z-index: 2;
-        }
-        .c-star {
-          position: absolute; border-radius: 50%; cursor: pointer;
-          transition: transform 0.3s, box-shadow 0.3s;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 1rem;
-        }
-        .c-star:hover {
-          transform: scale(1.55) !important;
-          box-shadow: 0 0 24px 8px rgba(255,180,200,0.55) !important;
-          z-index: 10 !important;
-        }
-        .c-star-label {
-          position: absolute; top: calc(100% + 6px); left: 50%;
-          transform: translateX(-50%);
-          font-family: 'Caveat', cursive; font-size: 11px;
-          color: rgba(255,200,230,0.65); white-space: nowrap;
-          pointer-events: none; text-align: center;
-        }
-        .c-line {
-          position: absolute;
-          background: linear-gradient(90deg, transparent, rgba(255,160,200,0.28), transparent);
-          height: 1px; transform-origin: left center;
-          pointer-events: none;
-          animation: constellationPulse 4s ease-in-out infinite;
-        }
-        @keyframes constellationPulse { 0%,100% { opacity: 0.25; } 50% { opacity: 0.65; } }
-        .c-memory-popup {
-          position: absolute;
-          background: rgba(30,10,50,0.9);
-          border: 1px solid rgba(255,160,200,0.28);
-          border-radius: 12px; padding: 10px 14px;
-          font-family: 'Caveat', cursive; font-size: 13px;
-          color: rgba(255,210,230,0.9);
-          pointer-events: none; z-index: 20; white-space: nowrap;
-          backdrop-filter: blur(8px);
-          box-shadow: 0 4px 20px rgba(255,100,160,0.18);
-        }
-        .c-bg-star {
-          position: absolute; border-radius: 50%; background: white;
-          pointer-events: none; animation: immTwinkle ease-in-out infinite;
-        }
-        @keyframes immTwinkle {
-          0%,100% { opacity: 0.15; transform: scale(1); }
-          50%      { opacity: 0.75; transform: scale(1.5); }
-        }
-
-        /* ── 4. MIDNIGHT AMBIENT ──────────────────────────────────────── */
-        .midnight-section {
-          position: relative; overflow: hidden;
-          min-height: 400px;
-          background: linear-gradient(180deg, #0d0518 0%, #1a0832 40%, #0f1428 100%);
-          display: flex; flex-direction: column;
-          align-items: center; justify-content: center;
-          padding: 4rem 1rem;
-        }
-        .midnight-moon {
-          width: 84px; height: 84px; border-radius: 50%;
-          background: radial-gradient(circle at 34% 36%, #fffdf0, #ffd89b 60%, #f5c062);
-          box-shadow: 0 0 40px 14px rgba(255,216,155,0.22), 0 0 80px 30px rgba(255,216,155,0.07);
-          margin-bottom: 1.8rem;
-          animation: moonGlow2 6s ease-in-out infinite;
-          position: relative; z-index: 2; cursor: pointer;
-        }
-        @keyframes moonGlow2 {
-          0%,100% { box-shadow: 0 0 40px 14px rgba(255,216,155,0.22), 0 0 80px 30px rgba(255,216,155,0.07); }
-          50%      { box-shadow: 0 0 60px 22px rgba(255,216,155,0.4), 0 0 120px 50px rgba(255,216,155,0.1); }
-        }
-        .midnight-text {
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: clamp(1.05rem, 2.8vw, 1.75rem);
-          color: rgba(255,220,240,0.82); text-align: center;
-          max-width: 440px; line-height: 1.7;
-          z-index: 2; position: relative;
-          animation: corridorQuoteIn 1.4s ease both;
-        }
-        .midnight-particle {
-          position: absolute; border-radius: 50%; pointer-events: none;
-          animation: midFloat ease-in-out infinite;
-        }
-        @keyframes midFloat {
-          0%   { transform: translateY(0) translateX(0); opacity: 0.25; }
-          33%  { transform: translateY(-20px) translateX(8px); opacity: 0.55; }
-          66%  { transform: translateY(-9px) translateX(-5px); opacity: 0.35; }
-          100% { transform: translateY(0) translateX(0); opacity: 0.25; }
-        }
-
-        /* ── 5. SECRET MEMORY ROOM ────────────────────────────────────── */
-        .secret-section {
-          position: relative; overflow: hidden;
-          background: linear-gradient(160deg, #1e0d30 0%, #2d0f1e 100%);
-          display: flex; flex-direction: column; align-items: center;
-          padding: 4rem 1rem; min-height: 460px;
-        }
-        .secret-heading {
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: clamp(1.2rem, 2.8vw, 1.9rem);
-          color: rgba(255,200,220,0.82); margin-bottom: 0.4rem;
-          z-index: 2; position: relative;
-        }
-        .secret-sub {
-          font-family: 'Caveat', cursive; font-size: 0.9rem;
-          color: rgba(255,160,200,0.48); margin-bottom: 2rem;
-          z-index: 2; position: relative;
-        }
-        .vault-wrap {
-          position: relative; z-index: 2;
-          display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
-        }
-        .vault-door {
-          width: 170px; height: 170px; border-radius: 50%;
-          border: 2.5px solid rgba(255,160,200,0.32);
-          background: radial-gradient(circle at 40% 35%, rgba(80,20,50,0.9), rgba(20,5,30,0.97));
-          box-shadow: 0 0 40px rgba(255,100,160,0.12), inset 0 0 30px rgba(255,100,160,0.06);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 2.4rem; cursor: pointer;
-          transition: transform 0.55s ease, box-shadow 0.4s;
-          position: relative;
-        }
-        .vault-door:hover {
-          box-shadow: 0 0 60px rgba(255,100,160,0.32), inset 0 0 40px rgba(255,100,160,0.1);
-          transform: rotate(18deg);
-        }
-        .vault-door.vault-open {
-          transform: rotate(360deg);
-          box-shadow: 0 0 80px rgba(255,180,220,0.5);
-        }
-        .vault-ring {
-          position: absolute; border-radius: 50%;
-          border: 1px solid rgba(255,160,200,0.18);
-          animation: vaultPulse 3s ease-in-out infinite;
-          pointer-events: none;
-        }
-        @keyframes vaultPulse {
-          0%,100% { transform: scale(1); opacity: 0.28; }
-          50%      { transform: scale(1.08); opacity: 0.55; }
-        }
-        .vault-reveal {
-          max-width: 320px; width: 100%;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,160,200,0.18);
-          border-radius: 16px; padding: 1.4rem;
-          backdrop-filter: blur(10px); text-align: center;
-          transition: opacity 0.6s, transform 0.6s;
-          opacity: 0; transform: translateY(20px); pointer-events: none;
-        }
-        .vault-reveal.vault-shown { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .vault-note {
-          font-family: 'Caveat', cursive; font-size: 1.05rem;
-          color: rgba(255,210,230,0.88); line-height: 1.7; white-space: pre-line;
-        }
-        .vault-emoji-row { font-size: 1.7rem; margin-bottom: 0.5rem; }
-        .vault-btn {
-          margin-top: 1rem;
-          background: linear-gradient(135deg, rgba(255,133,161,0.28), rgba(255,160,200,0.1));
-          border: 1px solid rgba(255,133,161,0.38);
-          border-radius: 999px; color: rgba(255,210,230,0.88);
-          font-family: 'Caveat', cursive; font-size: 1rem;
-          padding: 0.4rem 1.4rem; cursor: pointer; transition: background 0.3s;
-        }
-        .vault-btn:hover {
-          background: linear-gradient(135deg, rgba(255,133,161,0.48), rgba(255,160,200,0.2));
-        }
-        .secret-bg-orb {
-          position: absolute; border-radius: 50%; pointer-events: none;
-          filter: blur(60px); opacity: 0.1;
-          animation: orbDrift ease-in-out infinite;
-        }
-        @keyframes orbDrift { 0%,100% { transform: translate(0,0); } 50% { transform: translate(28px,-18px); } }
-
-        /* ── 6. SHARED MEMORY DESKTOP ─────────────────────────────────── */
-        .desktop-section {
-          position: relative; overflow: hidden;
-          background: linear-gradient(135deg, #f7e8ff 0%, #ffe8f0 50%, #e8f0ff 100%);
-          padding: 3.5rem 1rem;
-          display: flex; flex-direction: column; align-items: center;
-        }
-        .desktop-heading {
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: clamp(1.2rem, 2.8vw, 1.9rem);
-          color: var(--text-dark); margin-bottom: 0.4rem;
-          z-index: 2; position: relative;
-        }
-        .desktop-sub {
-          font-family: 'Caveat', cursive; font-size: 0.9rem;
-          color: rgba(122,64,96,0.6); margin-bottom: 1.5rem;
-          z-index: 2; position: relative;
-        }
-        .os-window {
-          position: absolute; background: rgba(255,255,255,0.85);
-          border-radius: 10px; border: 1px solid rgba(255,180,210,0.32);
-          box-shadow: 0 8px 28px rgba(180,80,120,0.12);
-          overflow: hidden; backdrop-filter: blur(8px);
-          min-width: 190px; cursor: grab;
-          transition: box-shadow 0.2s; user-select: none;
-        }
-        .os-window:hover {
-          box-shadow: 0 16px 48px rgba(180,80,120,0.22); z-index: 20 !important;
-        }
-        .os-window:active { cursor: grabbing; }
-        .os-titlebar {
-          background: linear-gradient(90deg, #ffd6e0, #e8d5f5);
-          padding: 6px 10px; display: flex; align-items: center; gap: 6px;
-          font-family: 'Caveat', cursive; font-size: 13px; color: #7a3450;
-          border-bottom: 1px solid rgba(255,180,210,0.28);
-        }
-        .os-dot { width: 9px; height: 9px; border-radius: 50%; }
-        .os-body {
-          padding: 10px; font-family: 'Caveat', cursive; font-size: 12px;
-          color: #5a2040; line-height: 1.6; pointer-events: none;
-        }
-        .cassette-player {
-          display: flex; gap: 8px; align-items: center;
-          background: rgba(255,214,224,0.38);
-          border-radius: 8px; padding: 6px 10px; margin-top: 6px; font-size: 1rem;
-        }
-        .cassette-reel {
-          width: 15px; height: 15px; border-radius: 50%;
-          border: 2px solid #c87090;
-          animation: reelSpin2 1.5s linear infinite;
-        }
-        @keyframes reelSpin2 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .desktop-screen {
-          position: relative; width: 100%; max-width: 680px; height: 380px; z-index: 2;
-        }
-        .os-folder {
-          position: absolute; display: flex; flex-direction: column;
-          align-items: center; gap: 4px; cursor: pointer;
-          padding: 8px; border-radius: 8px; transition: background 0.2s;
-        }
-        .os-folder:hover { background: rgba(255,180,210,0.18); }
-        .os-folder-icon { font-size: 1.9rem; }
-        .os-folder-label {
-          font-family: 'Caveat', cursive; font-size: 11px; color: #7a3450;
-          text-align: center; max-width: 68px;
-        }
-        .chat-bubble {
-          background: rgba(255,214,224,0.55); border-radius: 12px 12px 12px 4px;
-          padding: 4px 10px; font-size: 12px; color: #7a3450;
-          margin-bottom: 4px; display: inline-block;
-        }
-        .chat-bubble-right {
-          background: rgba(232,213,245,0.55); border-radius: 12px 12px 4px 12px;
-          float: right; clear: both; padding: 4px 10px;
-          font-size: 12px; color: #7a3450; margin-bottom: 4px; display: inline-block;
-        }
-
-        /* ── 7. COSMIC ACCOUNT BUILDUP ────────────────────────────────── */
-        .cosmic-buildup {
-          position: relative; overflow: hidden;
-          min-height: 340px;
-          background: radial-gradient(ellipse at 50% 60%, #fff0f8 0%, #f0e8ff 50%, #e8f5ff 100%);
-          display: flex; flex-direction: column; align-items: center;
-          justify-content: center; padding: 4rem 1rem;
-        }
-        .cosmic-heading {
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: clamp(1.3rem, 3.5vw, 2.2rem);
-          color: var(--text-dark); text-align: center;
-          margin-bottom: 0.5rem; z-index: 2; position: relative;
-        }
-        .cosmic-sub {
-          font-family: 'Caveat', cursive; font-size: 1rem;
-          color: rgba(122,64,96,0.65); text-align: center;
-          z-index: 2; position: relative;
-        }
-        .cosmic-cta {
-          margin-top: 2rem; font-family: 'Caveat', cursive; font-size: 1.05rem;
-          color: rgba(122,64,96,0.55); z-index: 2; position: relative;
-          animation: cosmicBlink 2.5s ease-in-out infinite;
-        }
-        @keyframes cosmicBlink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
-        .orbit-ring {
-          position: absolute; border-radius: 50%;
-          border: 1px solid rgba(255,133,161,0.15);
-          pointer-events: none;
-        }
-
-        /* ── Shared sparkle pop ───────────────────────────────────────── */
-        .sparkle-pop {
-          position: fixed; pointer-events: none; z-index: 9000; font-size: 1.1rem;
-          animation: sparkleFly 0.9s ease-out forwards;
-        }
-        @keyframes sparkleFly {
-          0%   { opacity: 1; transform: translate(0,0) scale(1); }
-          100% { opacity: 0; transform: translate(var(--sx,0px), var(--sy,-40px)) scale(0.2); }
-        }
-
-        /* ── Scroll reveal for new sections ──────────────────────────── */
-        .imm-reveal {
-          opacity: 0; transform: translateY(28px);
-          transition: opacity 0.85s ease, transform 0.85s ease;
-        }
-        .imm-reveal.imm-vis { opacity: 1; transform: translateY(0); }
-
       `}</style>
 
       {/* Google Fonts */}
@@ -2499,9 +2572,9 @@ export default function Page() {
 
       {/* ── CONTENT (ซ่อนทั้งหมดถ้ายังไม่ unlock) ── */}
       <div style={{
-        opacity: isUnlocked ? 1 : 0,
-        pointerEvents: isUnlocked ? "auto" : "none",
-        transition: isUnlocked ? "opacity 0.4s ease" : "none",
+        height: isUnlocked ? "auto" : 0,
+        overflow: isUnlocked ? "visible" : "hidden",
+        transition: "none",
       }}>
         <div style={{ filter: isUnlocked ? "none" : "blur(8px)" }}>
 
@@ -2576,9 +2649,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ── MEMORY TRANSITION CORRIDOR ── */}
-      <MemoryTransitionCorridor />
-
       {/* ── STORY ── */}
       <section className="story-outer">
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
@@ -2611,12 +2681,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-
-      {/* ── DREAM EXPLORATION SPACE ── */}
-      <DreamExplorationSpace />
-
-      {/* ── MEMORY CONSTELLATION MAP ── */}
-      <MemoryConstellationMap />
 
             {/* ── ZOOM SECTION ── */}
       <section className="zoom-section">
@@ -2720,9 +2784,9 @@ export default function Page() {
             </svg>
 
             {/* Zone: Screen — SVG rect x=98 y=122 w=186 h=200 → %of 400×580 */}
-            <div className="zone zone-screen" id="zone-screen"
+            <div className="zone" id="zone-screen"
               style={{ left: "24.5%", top: "21%", width: "46.5%", height: "34.5%", borderRadius: "10px",
-                       background: "#1a0d18", padding: "4px" }}>
+                       background: "#1a0d18", padding: "4px", containerType: "size" as React.CSSProperties["containerType"] }}>
               <div className="video-zone-content">
                 <div className="video-scene" id="videoScene"
                   style={{ background: "linear-gradient(160deg,#ff9a56,#ffad7e,#ffd6a8)" }}>
@@ -2855,18 +2919,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ── MIDNIGHT AMBIENT ── */}
-      <MidnightAmbientSection />
-
-      {/* ── SECRET MEMORY ROOM ── */}
-      <SecretMemoryRoom />
-
-      {/* ── SHARED MEMORY DESKTOP ── */}
-      <SharedMemoryDesktop />
-
-      {/* ── COSMIC ACCOUNT BUILDUP ── */}
-      <CosmicAccountBuildup />
-
       {/* ── ACCOUNTS ── */}
       <section className="accounts-section">
         <div style={{ textAlign: "center", marginBottom: "0.5rem", position: "relative", zIndex: 1 }}>
@@ -2880,38 +2932,7 @@ export default function Page() {
             เลือก Account เพื่อจัดการ Content สุดน่ารัก
           </p>
         </div>
-        <div className="accounts-grid">
-          {ACCOUNTS.map((acc, i) => {
-            const detail = ACCOUNTS_DETAIL.find((d) => d.id === acc.id);
-            return (
-              <div
-                key={acc.id}
-                className="account-card reveal"
-                style={{ transitionDelay: `${i * 0.08}s`, cursor: "pointer" }}
-                onClick={() => router.push(`/account/${acc.id}`)}
-              >
-                <div className="acc-avatar" style={{ position: "relative" }}>
-                  {detail?.avatar ? (
-                    <Image
-                      src={detail.avatar}
-                      alt={acc.label}
-                      width={56}
-                      height={56}
-                      className="acc-avatar-img"
-                      style={{ borderRadius: "16px", objectFit: "cover", width: "100%", height: "100%" }}
-                    />
-                  ) : (
-                    <span>{acc.emoji}</span>
-                  )}
-                  {acc.verified && <div className="acc-badge">✓</div>}
-                </div>
-                <div className="acc-name">{acc.label}</div>
-                <div className="acc-niche"><span>{acc.emoji}</span> {acc.niche}</div>
-                {acc.gens > 0 && <div className="acc-gen-count">{acc.gens} gen</div>}
-              </div>
-            );
-          })}
-        </div>
+        <div className="accounts-grid" id="accountsGrid" ref={accountsGridRef} />
       </section>
 
       </div> {/* end inner blur div */}
@@ -2947,7 +2968,7 @@ export default function Page() {
               ))}
             </div>
 
-            <div className="modal-error">{passcodeError}</div>
+            <div className="modal-error">{error}</div>
 
             {/* Numpad */}
             <div className="numpad">

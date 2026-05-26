@@ -1,0 +1,322 @@
+[
+  {
+    "id": "acc2_1779262059468",
+    "accountId": "acc2",
+    "generatedAt": "2026-05-20T07:27:39.468Z",
+    "niche": "beauty",
+    "contentType": "viral_hook",
+    "userPrompt": "",
+    "ideaCount": 5,
+    "result": {
+      "analysis": {
+        "topics": [
+          "Phone optimization and speed fixes",
+          "Battery life saving and charging habits",
+          "Hidden features in iOS/macOS/apps",
+          "AI tools and productivity shortcuts",
+          "IT gadgets and tech life-hacks"
+        ],
+        "formats": [
+          "Warning/Alerts (⚠️) for common mistakes",
+          "Listicles (3 ways, 5 things, 10 commands)",
+          "Quick fixes (Solve in 10 seconds / 1 minute)",
+          "Life-changing item recommendations"
+        ],
+        "hooks": [
+          "Stop doing this or your X will ruin",
+          "Did you know? Secret features everyone misses",
+          "Items that actually make your life 300% better",
+          "Quick tricks to make X look/act like a Pro"
+        ],
+        "tone": "Urgent but friendly, highly actionable, expert yet accessible, emoji-heavy.",
+        "high_performing_insights": "The most viral posts (300-800+ likes) solve immediate, highly relatable pain points (slow phone, bad battery, essential daily gadgets) using quick, unconventional fixes or 'secret' methods. They use strong emotional triggers like 'Warning', 'Stop doing this', or 'Life-changing'."
+      },
+      "avoid": [
+        "Tech hacks",
+        "iPhone/Android settings",
+        "Battery saving tips",
+        "Excel/Canva/MacBook shortcuts",
+        "AI and ChatGPT prompts",
+        "App recommendations",
+        "Data storage and phone cleaning",
+        "Finding lost phones",
+        "Tech gadgets like wireless earbuds or power banks"
+      ],
+      "ideas": [
+        {
+          "title": "เตือนภัย⚠️ สกินแคร์ที่ห้ามใช้คู่กัน",
+          "hook": "เตือนภัยสาวๆ ⚠️ สกินแคร์ 2 ตัวนี้ ห้ามทาพร้อมกันเด็ดขาด หน้าพังไม่รู้ตัว!",
+          "type": "viral_hook",
+          "angle": "Adapting the 'Cheap cables ruin battery' tech warning into a critical skincare ingredient warning (e.g., Retinol + AHA/BHA) that causes unseen damage.",
+          "caption": "ซื้อสกินแคร์มาแพง แต่ใช้ผิดวิธีระวังเสียของแถมหน้าพัง! 😭\nหลายคนอยากหน้าใสไวๆ เลยโบกทุกอย่างพร้อมกัน แต่รู้มั้ยว่าส่วนผสมบางอย่างมันตีกัน!\n❌ Retinol + AHA/BHA = หน้าแหก ลอกแดง\n❌ วิตามินซี + เบนซอยล์เปอร์ออกไซด์ = หักล้างกัน ทาไปก็ไม่เห็นผล\nใครกำลังทาคู่กันอยู่ หยุดด่วน! ลองจัดตารางสลับเช้า-เย็นแทนนะ หน้าจะได้ใสแบบปลอดภัย ✨\n\n#สกินแคร์รูทีน #เตือนภัยบิวตี้ #ทริคดูแลผิว #เรื่องผิวผิว #Lemon8บิวตี้",
+          "score": {
+            "creativity": 8,
+            "virality": 10,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "ทริคแก้เมคอัพตกร่องใน 10 วิ⏳",
+          "hook": "บอกลาหน้าหยา! ทริคแก้เมคอัพตกร่องระหว่างวัน ภายใน 10 วินาที ⏳💄",
+          "type": "viral_hook",
+          "angle": "Adapting the 'Fix slow internet in 10 sec' format to solve a very common mid-day beauty pain point (creasing makeup).",
+          "caption": "แต่งหน้าตอนเช้าสวยเป๊ะ ตกบ่ายมาคราบถามหา ร่องแก้มแตกระแหง 😤\nไม่ต้องลบแต่งใหม่ให้เสียเวลา! ลองทริคนี้เลย ดีขึ้นจริงแบบงงๆ\nแค่ใช้ฟองน้ำหมาดๆ (หรือฉีด Setting Spray ใส่ฟองน้ำนิดนึง) ค่อยๆ แท็บตรงที่ตกร่องเบาๆ ให้รองพื้นกลืนไปกับผิว แล้วเซ็ตด้วยแป้งฝุ่นโปร่งแสงบางๆ\nแค่นี้หน้าก็กลับมาเนียนกริบเหมือนเพิ่งแต่งเสร็จใหม่ๆ แล้ว ⚡\n\n#ทริคแต่งหน้า #เมคอัพ #แก้หน้าหยา #ฮาวทูแต่งหน้า #Lemon8HowTo",
+          "score": {
+            "creativity": 7,
+            "virality": 9,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "🤫ความลับนางฟ้า! ลงรองพื้นให้กริบ",
+          "hook": "ความลับนางฟ้า! ทริคลงรองพื้นให้กริบเหมือนใส่ฟิลเตอร์ ทั้งที่ใช้ของหลักร้อย 🧚‍♀️✨",
+          "type": "viral_hook",
+          "angle": "Adapting the 'Secret features you didn't know' format to hidden makeup application techniques that make cheap products look high-end.",
+          "caption": "รองพื้นขวดเดิม แต่ทำไมวันนี้หน้าเนียนเหมือนใช้ของเคาน์เตอร์แบรนด์? 📸✨\nความลับไม่ใช่อุปกรณ์แพง แต่คือ “ทริคเล็กๆ” ที่ช่างแต่งหน้าชอบใช้!\nลองผสมรองพื้นกับมอยส์เจอไรเซอร์ในอัตราส่วน 2:1 แล้วใช้นิ้ววอร์มก่อนแท็บลงบนผิว จากนั้นค่อยใช้ฟองน้ำเกลี่ย\nบอกเลยว่าผิวจะดูฉ่ำ โกลว์ และติดทนขึ้นแบบ 300% ลองเอาไปทำตามดูน้า!\n\n#สอนแต่งหน้า #รีวิวบิวตี้ #ทริคแต่งหน้า #ผิวสวยสุขภาพดี #แต่งหน้ามือใหม่",
+          "score": {
+            "creativity": 9,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "4 ไอเทมบิวตี้ที่มีแล้วชีวิตดีขึ้น 300%",
+          "hook": "คัดมาแล้ว! 4 ไอเทมบิวตี้กู้ชีพ ที่มีแล้วชีวิตดีขึ้น 300% (ไม่ได้เว่อร์) 💖🔥",
+          "type": "viral_hook",
+          "angle": "Adapting the highly successful 'IT items that improve life' format to underrated, highly practical beauty gadgets/tools.",
+          "caption": "บางอย่างไม่ใช่ของแพง แต่พอมีแล้วจะสงสัยว่า “ที่ผ่านมาอยู่มาได้ยังไง” 😅\n1️⃣ ที่ดัดขนตาไฟฟ้า: ดัดทีเดียวงอนเด้งทั้งวัน ไม่ต้องหนีบซ้ำให้ขนตาร่วง\n2️⃣ มาสก์ซิลิโคนทับแผ่นมาสก์: เดินทำนู่นทำนี่ได้ แผ่นมาสก์ไม่หลุด แถมผลักสกินแคร์เข้าผิวดีมาก\n3️⃣ พัฟจิ๋วลงคอนซีลเลอร์: เข้าถึงซอกจมูก ใต้ตาได้กริบสุดๆ\n4️⃣ ไม้พายปาดรองพื้น: ประหยัดรองพื้น แถมได้งานผิวบางเบาแบบสาวเกาหลี\nใครยังไม่มี ถือว่าพลาดมาก ไปตำด่วน! 😉✨\n\n#ป้ายยาช้อปปิ้ง #ไอเทมบิวตี้ #รีวิวเครื่องสําอาง #ของดีบอกต่อ #สวยบอกต่อ",
+          "score": {
+            "creativity": 8,
+            "virality": 10,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "ริ้วรอยถามหา เพราะทำสิ่งนี้ทุกวัน🔥",
+          "hook": "หน้าแก่ก่อนวัย ไม่ได้แปลว่าสกินแคร์ไม่ดี แต่เพราะคุณทำสิ่งนี้ทุกวันโดยไม่รู้ตัว! 😱💦",
+          "type": "viral_hook",
+          "angle": "Adapting the 'Phone overheats because you do this daily' format to uncover daily habits that secretly cause premature aging.",
+          "caption": "โบกครีมกระปุกละพัน แต่ถ้ายังทำพฤติกรรมพวกนี้อยู่ ครีมก็ช่วยไม่ได้นะ! 🛑\nส่วนใหญ่เกิดจากเรื่องเล็กๆ ที่เราทำทุกวันจนชิน\n👉 เช็ดหน้าแรงๆ ด้วยสำลี: ตัวการทำหน้าเหี่ยวและเกิดริ้วรอย\n👉 ล้างหน้าด้วยน้ำอุ่นจัด: ทำให้ผิวแห้งตึงและเสียสมดุล\n👉 ทาครีมกันแดดไม่ถึง 2 ข้อนิ้ว: เท่ากับแทบไม่ได้ปกป้องผิวเลย\nลองเช็กดูว่าคุณพลาดข้อไหนไปบ้าง รู้แล้วปรับด่วน ผิวจะได้เด็กไปนานๆ 💖\n\n#ดูแลผิวหน้า #สกินแคร์ #แชร์ความรู้สุขภาพ #เคล็ดลับความสวย #ฮาวทูดูแลผิว",
+          "score": {
+            "creativity": 7,
+            "virality": 8,
+            "uniqueness": 8
+          }
+        }
+      ],
+      "best_ideas": [
+        {
+          "title": "เตือนภัย⚠️ สกินแคร์ที่ห้ามใช้คู่กัน",
+          "hook": "เตือนภัยสาวๆ ⚠️ สกินแคร์ 2 ตัวนี้ ห้ามทาพร้อมกันเด็ดขาด หน้าพังไม่รู้ตัว!",
+          "type": "viral_hook",
+          "angle": "Adapting the 'Cheap cables ruin battery' tech warning into a critical skincare ingredient warning (e.g., Retinol + AHA/BHA) that causes unseen damage.",
+          "caption": "ซื้อสกินแคร์มาแพง แต่ใช้ผิดวิธีระวังเสียของแถมหน้าพัง! 😭\nหลายคนอยากหน้าใสไวๆ เลยโบกทุกอย่างพร้อมกัน แต่รู้มั้ยว่าส่วนผสมบางอย่างมันตีกัน!\n❌ Retinol + AHA/BHA = หน้าแหก ลอกแดง\n❌ วิตามินซี + เบนซอยล์เปอร์ออกไซด์ = หักล้างกัน ทาไปก็ไม่เห็นผล\nใครกำลังทาคู่กันอยู่ หยุดด่วน! ลองจัดตารางสลับเช้า-เย็นแทนนะ หน้าจะได้ใสแบบปลอดภัย ✨\n\n#สกินแคร์รูทีน #เตือนภัยบิวตี้ #ทริคดูแลผิว #เรื่องผิวผิว #Lemon8บิวตี้",
+          "score": {
+            "creativity": 8,
+            "virality": 10,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "4 ไอเทมบิวตี้ที่มีแล้วชีวิตดีขึ้น 300%",
+          "hook": "คัดมาแล้ว! 4 ไอเทมบิวตี้กู้ชีพ ที่มีแล้วชีวิตดีขึ้น 300% (ไม่ได้เว่อร์) 💖🔥",
+          "type": "viral_hook",
+          "angle": "Adapting the highly successful 'IT items that improve life' format to underrated, highly practical beauty gadgets/tools.",
+          "caption": "บางอย่างไม่ใช่ของแพง แต่พอมีแล้วจะสงสัยว่า “ที่ผ่านมาอยู่มาได้ยังไง” 😅\n1️⃣ ที่ดัดขนตาไฟฟ้า: ดัดทีเดียวงอนเด้งทั้งวัน ไม่ต้องหนีบซ้ำให้ขนตาร่วง\n2️⃣ มาสก์ซิลิโคนทับแผ่นมาสก์: เดินทำนู่นทำนี่ได้ แผ่นมาสก์ไม่หลุด แถมผลักสกินแคร์เข้าผิวดีมาก\n3️⃣ พัฟจิ๋วลงคอนซีลเลอร์: เข้าถึงซอกจมูก ใต้ตาได้กริบสุดๆ\n4️⃣ ไม้พายปาดรองพื้น: ประหยัดรองพื้น แถมได้งานผิวบางเบาแบบสาวเกาหลี\nใครยังไม่มี ถือว่าพลาดมาก ไปตำด่วน! 😉✨\n\n#ป้ายยาช้อปปิ้ง #ไอเทมบิวตี้ #รีวิวเครื่องสําอาง #ของดีบอกต่อ #สวยบอกต่อ",
+          "score": {
+            "creativity": 8,
+            "virality": 10,
+            "uniqueness": 8
+          }
+        }
+      ],
+      "tokenUsage": {
+        "prompt_tokens": 6608,
+        "completion_tokens": 4948,
+        "total_tokens": 11556
+      }
+    }
+  },
+  {
+    "id": "acc2_1779262140402",
+    "accountId": "acc2",
+    "generatedAt": "2026-05-20T07:29:00.402Z",
+    "niche": "lifestyle",
+    "contentType": "viral_hook",
+    "userPrompt": "",
+    "ideaCount": 5,
+    "result": {
+      "analysis": {
+        "topics": [
+          "iPhone & Android tips/tricks",
+          "Excel & Canva shortcuts",
+          "Battery saving & overheating prevention",
+          "Hidden device features & settings",
+          "AI tools (ChatGPT, free AI)",
+          "MacBook shortcuts",
+          "Must-have IT items/gadgets",
+          "App recommendations & warnings",
+          "Social media tricks (IG stories, Messenger)"
+        ],
+        "formats": [
+          "Listicles (5 things, 10 tools)",
+          "Warning / Alert (⚠️)",
+          "Did you know? / Secret features (รู้ยัง!! / ความลับ)",
+          "Quick fix (How to in X seconds/minutes)",
+          "Life-improving items (Items that make life 300% better)"
+        ],
+        "hooks": [
+          "If you use X, save this post / read this immediately",
+          "Stop doing this daily / Many people do this wrong",
+          "Secret tricks most people don't know",
+          "Items you must have / Changed my life",
+          "Fix this annoying problem in 10 seconds"
+        ],
+        "tone": "Helpful, urgent yet friendly, relatable, highly practical, emoji-heavy.",
+        "high_performing_insights": "The most viral posts (300-800+ likes) offer immediate relief to common frustrations (slow phone, slow internet, hidden chats) or recommend affordable items that dramatically improve daily life. They use strong emotional triggers like 'fear of missing out' or 'fear of damage' and promise a solution in under 1 minute."
+      },
+      "avoid": [
+        "รวม Shortcut Excel ช่วยให้ทำงานไวขึ้น",
+        "Android vs iPhone ปี 2026",
+        "How to ปรับกล้องไอโฟนให้ไม่ติดเหลือง",
+        "เตือนภัย ซื้อสายชาร์จถูกเกินไป",
+        "ทริคเด็ด Canva",
+        "ทำไมมือถือเต็มทั้งที่ไม่โหลดอะไรเพิ่ม",
+        "ตั้งค่ายังไงให้มือถือลื่นขึ้น",
+        "มือถือร้อนง่าย เพราะคุณทำสิ่งนี้ทุกวัน",
+        "3 ทริคช่วยให้มือถือเร็วขึ้นใน 1 นาที",
+        "ฟีเจอร์ลับในมือถือ",
+        "10 ทริคง่ายๆ ที่คนใช้มือถือ พังไว มักพลาด",
+        "ตั้งค่ามือถือ 5 นาที ช่วยประหยัดแบต",
+        "ชาร์จแบตยังไง ไม่ให้มือถือพังเร็ว",
+        "ฮาวทูเปลี่ยนปุ่ม Power ให้เป็นปุ่มโทรฉุกเฉิน",
+        "แจกทริค คีย์ลัดแป้นพิมพ์ IPad",
+        "อ่านแชทยังไง ไม่ให้รู้ว่าอ่านแล้ว",
+        "สอนวิธีตั้งค่า wallpaper ไอโฟน",
+        "มือถือหายทำไงดี",
+        "รวม 6 ไอเทมที่มีแล้วชีวิตดีขึ้นจริง",
+        "แจกคีเวิร์ด GIF IG",
+        "มือถือเร็วขึ้นแบบไม่ต้องรีเซ็ทเครื่อง",
+        "ทริคลับ Messenger",
+        "10 AI ที่ต้องมี",
+        "ถ่ายรูปด้วยมือถือให้เหมือนกล้องโปร",
+        "ตั้งค่ามือถือแบบนี้ = แบตอยู่ได้ทั้งวัน",
+        "ทริคเล็กๆ ที่ทำให้คุณใช้มือถือได้โปรขึ้น",
+        "มัดรวมแอปฟรีที่ควรมีติดเครื่อง",
+        "5 สิ่งที่คนใช้ iPhone ส่วนใหญ่ทำผิดมาตลอด",
+        "แก้ปัญหาเน็ตช้าใน 10 วิ",
+        "5 ฟีเจอร์ AI ที่คุณใช้ได้ฟรี",
+        "10 คำสั่ง ChatGPT",
+        "ทริคใช้ MacBook ให้ดูโปร",
+        "5 วิธีใช้ iPhone ให้คุ้มที่สุด",
+        "5 ฟีเจอร์ลับใน iPhone",
+        "มือถือคุณอาจมีแอปอันตรายอยู่",
+        "ชาร์จมือถือข้ามคืน ทำให้แบตเสื่อมจริงไหม",
+        "3 วิธีทำให้ iPhone เร็วขึ้นใน 1 นาที",
+        "แอบดูสตอรี่ IG ได้จริงหรอ",
+        "3 สัญญาณเตือน ว่ามือถือคุณกำลังจะพัง",
+        "ไอเทมไอทีที่ควรมี",
+        "เตือนภัย⚠️ สกินแคร์ที่ห้ามใช้คู่กัน",
+        "ทริคแก้เมคอัพตกร่องใน 10 วิ",
+        "ความลับนางฟ้า! ลงรองพื้นให้กริบ",
+        "4 ไอเทมบิวตี้ที่มีแล้วชีวิตดีขึ้น 300%",
+        "ริ้วรอยถามหา เพราะทำสิ่งนี้ทุกวัน",
+        "All Tech/IT topics",
+        "All Beauty/Skincare/Makeup topics"
+      ],
+      "ideas": [
+        {
+          "title": "ตื่นมาแล้วเพลีย เพราะทำสิ่งนี้ก่อนนอน 🛌🔥",
+          "hook": "ใครนอนครบ 8 ชั่วโมงแต่ตื่นมายังรู้สึกเหมือนโดนสูบพลัง เช็กด่วน! คุณอาจกำลังทำสิ่งนี้อยู่ 😱",
+          "type": "viral_hook",
+          "angle": "Adapting the 'Phone overheats because of daily habits' format to personal energy and sleep hygiene.",
+          "caption": "เชื่อไหมว่าบางทีปัญหาไม่ได้อยู่ที่เวลานอน แต่อยู่ที่ 'พฤติกรรมก่อนนอน' 🛑 หลายคนชอบดื่มน้ำเยอะเกินไป หรือกินของหวานรอบดึก ซึ่งมันไปกวนระบบเผาผลาญและคลื่นสมอง! โพสต์นี้รวมสาเหตุลับๆ ที่ทำให้เราตื่นมาแล้วไม่สดชื่น พร้อมวิธีแก้แบบทำได้คืนนี้เลย 🌙✨ #ทริคสุขภาพ #พัฒนาตัวเอง #Lemon8ฮาวทู #ปัญหาชีวิต #สุขภาพการนอน",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "⚠️ 3 สัญญาณเตือน ว่าคุณไม่ได้ขี้เกียจ แต่กำลัง Burnout",
+          "hook": "ถ้าช่วงนี้รู้สึกไม่อยากทำอะไรเลย อย่าเพิ่งด่าตัวเองว่าขี้เกียจ! ร่างกายคุณอาจกำลังประท้วงอยู่ 🚨",
+          "type": "viral_hook",
+          "angle": "Adapting '3 warning signs your phone is dying' to mental/physical fatigue and burnout.",
+          "caption": "แยกให้ออกระหว่าง 'ขี้เกียจ' กับ 'หมดไฟ' 🔥 ถ้าคุณมีอาการ 1. หงุดหงิดง่ายกับเรื่องเล็กๆ 2. นอนเท่าไหร่ก็ไม่พอ 3. ไม่อยากเจอใครเลยแม้แต่เพื่อนสนิท นี่คือสัญญาณเตือนว่าร่างกายและจิตใจรับไม่ไหวแล้ว! 🛑 อย่าฝืนเด็ดขาด ลองถอยออกมาพักชาร์จแบตให้ตัวเองด่วนๆ ข้อมูลพังยังกู้ได้ แต่สุขภาพจิตพัง กู้ยากกว่านะ 🥺 #หมดไฟ #ฮีลใจตัวเอง #สุขภาพจิต #พัฒนาตัวเอง #วัยทำงาน",
+          "score": {
+            "creativity": 9,
+            "virality": 10,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "ทริคแบ่งเงินเดือนใน 1 นาที ให้มีเงินเก็บแบบงงๆ 💸✨",
+          "hook": "เงินเดือนออกปุ๊บ หายปั๊บ! ใครเป็นแบบนี้ ต้องลองสูตรลับที่ใช้เวลาทำแค่ 1 นาทีตอนเงินเดือนเข้า ⏰",
+          "type": "viral_hook",
+          "angle": "Adapting 'Make iPhone faster in 1 min' to a quick, automated financial hack.",
+          "caption": "ไม่ต้องจดบัญชีรายรับรายจ่ายให้ปวดหัว! 🤯 แค่ใช้ทริคแบ่งเงินแบบ 'อัตโนมัติ' ทันทีที่เงินเดือนเข้า แบ่งเป็น 3 ก้อนชัดเจน (ใช้จ่าย/เก็บ/ลงทุน) แล้วตั้งโอนล่วงหน้าไปเลย ทริคเล็กๆ แค่นี้ช่วยให้เรามีเงินเก็บทุกเดือนโดยไม่ต้องฝืนใจ แถมยังมีเงินเหลือไปช้อปปิ้งแบบไม่รู้สึกผิดด้วยนะ 🛍️💖 #ทริคเก็บเงิน #การเงินการลงทุน #มนุษย์เงินเดือน #ฉลาดใช้เงิน #Lemon8ฮาวทู",
+          "score": {
+            "creativity": 8,
+            "virality": 8,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "ความลับจัดตู้เสื้อผ้า ให้หาของเจอง่ายขึ้น 300% 👗✨",
+          "hook": "ตู้เสื้อผ้าแทบระเบิด แต่บ่นว่า 'ไม่มีอะไรจะใส่' ทุกเช้า? นี่คือทริคที่คนจัดบ้านโปรๆ ไม่เคยบอกคุณ! 🤫",
+          "type": "viral_hook",
+          "angle": "Adapting 'Secret messenger tricks' to a common daily frustration: finding clothes in a messy closet.",
+          "caption": "เลิกยัดทุกอย่างรวมกันได้แล้ว! 🙅‍♀️ แค่เปลี่ยนวิธีแขวนเสื้อผ้าตามโทนสี และพับกางเกงแบบแนวตั้ง (ให้มองเห็นทุกตัวไม่ต้องรื้อ) ชีวิตตอนเช้าจะง่ายขึ้นแบบคนละเรื่อง 🌅 โพสต์นี้รวมฟีเจอร์ลับของการจัดตู้เสื้อผ้า ที่จะเปลี่ยนตู้รกๆ ให้กลายเป็นโชว์รูมขนาดย่อม รู้งี้ทำนานแล้ว! #จัดระเบียบบ้าน #ทริคแม่บ้าน #ไลฟ์สไตล์ #ฮาวทูจัดห้อง #งานบ้านที่รัก",
+          "score": {
+            "creativity": 9,
+            "virality": 9,
+            "uniqueness": 10
+          }
+        },
+        {
+          "title": "4 ไอเทมพกติดกระเป๋า ที่ช่วยกู้ชีพในวันซวยๆ 🎒🚨",
+          "hook": "เคยปวดท้องกะทันหัน หรือเสื้อเลอะก่อนคุยงานสำคัญไหม? แค่มีของพวกนี้ติดกระเป๋าไว้ ชีวิตง่ายขึ้นเยอะ! 😭",
+          "type": "viral_hook",
+          "angle": "Adapting 'IT items that make life 300% better' to practical, non-tech daily survival essentials (Everyday Carry).",
+          "caption": "บางอย่างไม่ใช่ของแพง แต่พอถึงเวลาคับขันแล้วมีใช้ คือรู้สึกเหมือนถูกหวย! 😅 ไม่ว่าจะเป็น ปากกาขจัดคราบ ทิชชู่เปียกสูตรฆ่าเชื้อ ยาแก้ปวด หรือพลาสเตอร์ปิดแผลกันรองเท้ากัด 🩹 ไอเทมพวกนี้คือ #ของมันต้องมี ที่ช่วยชีวิตเราในวันที่อะไรก็ไม่เป็นใจ ใครจัดกระเป๋าไปเรียนหรือทำงาน เซฟลิสต์นี้ไว้เลย คุ้มแน่นอน! ✨ #พกอะไรในกระเป๋า #รีวิวของดีบอกต่อ #ไอเทมกู้ชีพ #ชีวิตมหาลัย #วัยทำงาน",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 8
+          }
+        }
+      ],
+      "best_ideas": [
+        {
+          "title": "⚠️ 3 สัญญาณเตือน ว่าคุณไม่ได้ขี้เกียจ แต่กำลัง Burnout",
+          "hook": "ถ้าช่วงนี้รู้สึกไม่อยากทำอะไรเลย อย่าเพิ่งด่าตัวเองว่าขี้เกียจ! ร่างกายคุณอาจกำลังประท้วงอยู่ 🚨",
+          "type": "viral_hook",
+          "angle": "Adapting '3 warning signs your phone is dying' to mental/physical fatigue and burnout.",
+          "caption": "แยกให้ออกระหว่าง 'ขี้เกียจ' กับ 'หมดไฟ' 🔥 ถ้าคุณมีอาการ 1. หงุดหงิดง่ายกับเรื่องเล็กๆ 2. นอนเท่าไหร่ก็ไม่พอ 3. ไม่อยากเจอใครเลยแม้แต่เพื่อนสนิท นี่คือสัญญาณเตือนว่าร่างกายและจิตใจรับไม่ไหวแล้ว! 🛑 อย่าฝืนเด็ดขาด ลองถอยออกมาพักชาร์จแบตให้ตัวเองด่วนๆ ข้อมูลพังยังกู้ได้ แต่สุขภาพจิตพัง กู้ยากกว่านะ 🥺 #หมดไฟ #ฮีลใจตัวเอง #สุขภาพจิต #พัฒนาตัวเอง #วัยทำงาน",
+          "score": {
+            "creativity": 9,
+            "virality": 10,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "ความลับจัดตู้เสื้อผ้า ให้หาของเจอง่ายขึ้น 300% 👗✨",
+          "hook": "ตู้เสื้อผ้าแทบระเบิด แต่บ่นว่า 'ไม่มีอะไรจะใส่' ทุกเช้า? นี่คือทริคที่คนจัดบ้านโปรๆ ไม่เคยบอกคุณ! 🤫",
+          "type": "viral_hook",
+          "angle": "Adapting 'Secret messenger tricks' to a common daily frustration: finding clothes in a messy closet.",
+          "caption": "เลิกยัดทุกอย่างรวมกันได้แล้ว! 🙅‍♀️ แค่เปลี่ยนวิธีแขวนเสื้อผ้าตามโทนสี และพับกางเกงแบบแนวตั้ง (ให้มองเห็นทุกตัวไม่ต้องรื้อ) ชีวิตตอนเช้าจะง่ายขึ้นแบบคนละเรื่อง 🌅 โพสต์นี้รวมฟีเจอร์ลับของการจัดตู้เสื้อผ้า ที่จะเปลี่ยนตู้รกๆ ให้กลายเป็นโชว์รูมขนาดย่อม รู้งี้ทำนานแล้ว! #จัดระเบียบบ้าน #ทริคแม่บ้าน #ไลฟ์สไตล์ #ฮาวทูจัดห้อง #งานบ้านที่รัก",
+          "score": {
+            "creativity": 9,
+            "virality": 9,
+            "uniqueness": 10
+          }
+        }
+      ],
+      "tokenUsage": {
+        "prompt_tokens": 6884,
+        "completion_tokens": 6012,
+        "total_tokens": 12896
+      }
+    }
+  }
+]
