@@ -167,5 +167,137 @@
         "total_tokens": 13002
       }
     }
+  },
+  {
+    "id": "acc1_1779868573813",
+    "accountId": "acc1",
+    "generatedAt": "2026-05-27T07:56:13.813Z",
+    "niche": "lifestyle",
+    "contentType": "viral_hook",
+    "userPrompt": "",
+    "ideaCount": 5,
+    "result": {
+      "analysis": {
+        "topics": [
+          "Self-improvement",
+          "Aesthetic lifestyle",
+          "Mental wellness",
+          "Everyday romanticization",
+          "Navigating adulthood"
+        ],
+        "formats": [
+          "Photo carousels with text overlays",
+          "Relatable storytelling",
+          "Step-by-step aesthetic guides"
+        ],
+        "hooks": [
+          "Controversial but highly relatable opinions",
+          "Anti-hustle culture statements",
+          "Calling out common social anxieties or hidden insecurities"
+        ],
+        "tone": "Empathetic, authentic, slightly provocative, comforting, and highly relatable",
+        "high_performing_insights": "Since no scraped data was provided, general Lemon8 lifestyle insights show that viral content often starts by validating a hidden insecurity (e.g., social anxiety, burnout, feeling left behind) or challenging societal norms (e.g., toxic productivity). The best hooks are emotionally charged and make the reader feel 'seen' instantly."
+      },
+      "avoid": [
+        "Closet organization / nothing to wear dilemmas",
+        "Room layout affecting productivity / room makeovers",
+        "Perfume / body care layering to smell good",
+        "Personal finance / tracking expenses / Latte factor",
+        "Body lotion / glowing skin routines"
+      ],
+      "ideas": [
+        {
+          "title": "กฎการตัดคนออกจากชีวิต ✂️",
+          "hook": "ฉันเลิกคบเพื่อนไป 80% ในปีนี้... และค้นพบว่าชีวิตโคตรจะสงบสุข!",
+          "type": "viral_hook",
+          "angle": "Normalizing the shrinking of social circles in your 20s/30s and finding peace in cutting off toxic relationships, rather than feeling lonely.",
+          "caption": "ฉันเลิกคบเพื่อนไป 80% ในปีนี้... และค้นพบว่าชีวิตโคตรจะสงบสุข! 🤫 ใครกำลังเหนื่อยกับความสัมพันธ์ที่ Toxic หรือรู้สึกว่ายิ่งโตเพื่อนยิ่งน้อยลง ไม่ต้องตกใจค่ะ มันคือเรื่องปกติของการเติบโต มาดูวิธีคัดกรองคนในชีวิตและฮีลใจตัวเองกัน! 👇 #รีวิวชีวิตผู้ใหญ่ #ความสัมพันธ์ #พัฒนาตัวเอง",
+          "score": {
+            "creativity": 9,
+            "virality": 10,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "กฎ 1 ชั่วโมงเปลี่ยนชีวิต 📱🚫",
+          "hook": "ความลับของการไม่เป็นบ้าในยุคนี้ คือการห้ามแตะมือถือ 1 ชั่วโมงหลังตื่นนอน!",
+          "type": "viral_hook",
+          "angle": "A dramatic but achievable digital detox challenge that addresses the modern burnout caused by morning doom-scrolling.",
+          "caption": "ความลับของการไม่เป็นบ้าในยุคนี้ คือการห้ามแตะมือถือ 1 ชั่วโมงหลังตื่นนอน! 🤯 ใครตื่นมาแล้วไถฟีดเลยตั้งแต่วินาทีแรกบ้าง? รู้ไหมว่านั่นคือตัวการดูดพลังชีวิตชั้นดี ลองเปลี่ยนมาทำสิ่งนี้ในตอนเช้าแทน รับรองว่าอารมณ์ดีไปทั้งวัน ✨ #ฮาวทูพัฒนาตัวเอง #สุขภาพใจ #ทริคดีบอกต่อ",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "ศิลปะของการ 'นอนโง่ๆ' ☁️🛌",
+          "hook": "ใครบอกว่าวันหยุดต้อง Productive? การได้นอนโง่ๆ มองเพดานคือศิลปะแห่งการฮีลใจ!",
+          "type": "viral_hook",
+          "angle": "Anti-hustle culture. Romanticizing the act of doing absolutely nothing and resting without feeling guilty.",
+          "caption": "ใครบอกว่าวันหยุดต้อง Productive? การได้นอนโง่ๆ มองเพดานคือศิลปะแห่งการฮีลใจ! 🤍 เลิกกดดันตัวเองว่าต้องทำนู่นทำนี่ตลอดเวลาได้แล้ว ร่างกายเราไม่ใช่เครื่องจักรนะ! วันนี้ขอมาป้ายยาทริค 'การพักผ่อนแบบไม่ต้องรู้สึกผิด' ใครสายขี้เกียจมารวมกันตรงนี้ด่วน 🙋‍♀️ #พักผ่อน #รีวิวชีวิตทำงาน #ฮีลใจ",
+          "score": {
+            "creativity": 9,
+            "virality": 9,
+            "uniqueness": 8
+          }
+        },
+        {
+          "title": "โรแมนติกไซส์ชีวิตธรรมดา 📸✨",
+          "hook": "เลิกถ่ายรูปแค่ตอนไปคาเฟ่เถอะ! ลองหันมาถ่าย 'ความน่าเบื่อ' ในชีวิตประจำวันดูสิ",
+          "type": "viral_hook",
+          "angle": "Finding aesthetic and emotional value in photographing mundane, everyday moments rather than curated, expensive outings.",
+          "caption": "เลิกถ่ายรูปแค่ตอนไปคาเฟ่เถอะ! ลองหันมาถ่าย 'ความน่าเบื่อ' ในชีวิตประจำวันดูสิ 🗑️ แสงสะท้อนบนแก้วน้ำตอนเช้า หรือทางเดินกลับบ้านที่คุ้นเคย เชื่อไหมว่ารูปพวกนี้แหละที่เก็บความทรงจำได้ดีที่สุด มาลองฝึกมองหาความสวยงามในวันธรรมดากันเถอะ 🌻 #ถ่ายรูปด้วยมือถือ #ทริคถ่ายรูป #ไลฟ์สไตล์",
+          "score": {
+            "creativity": 9,
+            "virality": 8,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "สกิลกินข้าวคนเดียว เลเวล 99 🍜✨",
+          "hook": "เคยกินข้าวคนเดียวแล้วรู้สึกเหมือนคนทั้งร้านกำลังจ้องมองเราอยู่ไหม?",
+          "type": "viral_hook",
+          "angle": "Empowering solo dates and overcoming the social anxiety (the 'spotlight effect') of doing things alone.",
+          "caption": "เคยกินข้าวคนเดียวแล้วรู้สึกเหมือนคนทั้งร้านกำลังจ้องมองเราอยู่ไหม? 🍽️👀 ความจริงคือไม่มีใครสนใจเราเลยค่ะ! ใครที่เป็น Introvert หรือไม่กล้าไปไหนมาไหนคนเดียว โพสต์นี้จะมาปลดล็อกความกลัว และพาไปเดตกับตัวเองแบบสับๆ 💖 #เที่ยวคนเดียว #ติดเทรนด์ #introvert",
+          "score": {
+            "creativity": 8,
+            "virality": 9,
+            "uniqueness": 8
+          }
+        }
+      ],
+      "best_ideas": [
+        {
+          "title": "กฎการตัดคนออกจากชีวิต ✂️",
+          "hook": "ฉันเลิกคบเพื่อนไป 80% ในปีนี้... และค้นพบว่าชีวิตโคตรจะสงบสุข!",
+          "type": "viral_hook",
+          "angle": "Normalizing the shrinking of social circles in your 20s/30s and finding peace in cutting off toxic relationships, rather than feeling lonely.",
+          "caption": "ฉันเลิกคบเพื่อนไป 80% ในปีนี้... และค้นพบว่าชีวิตโคตรจะสงบสุข! 🤫 ใครกำลังเหนื่อยกับความสัมพันธ์ที่ Toxic หรือรู้สึกว่ายิ่งโตเพื่อนยิ่งน้อยลง ไม่ต้องตกใจค่ะ มันคือเรื่องปกติของการเติบโต มาดูวิธีคัดกรองคนในชีวิตและฮีลใจตัวเองกัน! 👇 #รีวิวชีวิตผู้ใหญ่ #ความสัมพันธ์ #พัฒนาตัวเอง",
+          "score": {
+            "creativity": 9,
+            "virality": 10,
+            "uniqueness": 9
+          }
+        },
+        {
+          "title": "ศิลปะของการ 'นอนโง่ๆ' ☁️🛌",
+          "hook": "ใครบอกว่าวันหยุดต้อง Productive? การได้นอนโง่ๆ มองเพดานคือศิลปะแห่งการฮีลใจ!",
+          "type": "viral_hook",
+          "angle": "Anti-hustle culture. Romanticizing the act of doing absolutely nothing and resting without feeling guilty.",
+          "caption": "ใครบอกว่าวันหยุดต้อง Productive? การได้นอนโง่ๆ มองเพดานคือศิลปะแห่งการฮีลใจ! 🤍 เลิกกดดันตัวเองว่าต้องทำนู่นทำนี่ตลอดเวลาได้แล้ว ร่างกายเราไม่ใช่เครื่องจักรนะ! วันนี้ขอมาป้ายยาทริค 'การพักผ่อนแบบไม่ต้องรู้สึกผิด' ใครสายขี้เกียจมารวมกันตรงนี้ด่วน 🙋‍♀️ #พักผ่อน #รีวิวชีวิตทำงาน #ฮีลใจ",
+          "score": {
+            "creativity": 9,
+            "virality": 9,
+            "uniqueness": 8
+          }
+        }
+      ],
+      "tokenUsage": {
+        "prompt_tokens": 1304,
+        "completion_tokens": 4365,
+        "total_tokens": 5669
+      }
+    }
   }
 ]
