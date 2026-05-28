@@ -547,6 +547,159 @@ function CosmicAccountBuildup() {
 // CSS injected client-side to avoid Next.js hydration mismatch
 // (inline <style> tags can differ between server/client due to quote escaping)
 // ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// ✦ MEDIA CONFIG — แก้ไขตรงนี้เพื่อใส่รูป / วิดีโอ / เพลง จาก /public
+// ══════════════════════════════════════════════════════════════════════════
+
+/**
+ * รูปภาพในส่วน Photo Cards (Polaroid Dispenser)
+ * - src: path ใน /public เช่น "/photos/beach.jpg"  →  ใส่ "" เพื่อใช้ emoji แทน
+ * - emoji / bg / caption / doodle / rotate / date / story / tags / frame
+ *   คือข้อมูลที่แสดงใน card และ modal
+ */
+const PHOTO_CARDS_CONFIG = [
+  {
+    src:     "",           // ← เปลี่ยนเป็น "/photos/beach.jpg"
+    emoji:   "🌅",
+    bg:      "linear-gradient(135deg,#ffb3c6,#ff6b9d)",
+    caption: "ริมทะเลพระอาทิตย์ตก 🌊",
+    doodle:  "♡ ♡ ♡",
+    rotate:  "-3deg",
+    date:    "14 January 2024 · 18:42",
+    story:   "คืนนั้นฟ้าส้มกลมๆ แสงสุดท้ายก่อนมืด\nเราสองคนยืนเงียบๆ ฟังเสียงคลื่น ไม่ต้องพูดอะไรก็รู้ว่ารักกัน",
+    tags:    ["#ทะเล","#พระอาทิตย์ตก","#ด้วยกัน","#moment"],
+    frame:   "A-01",
+  },
+  {
+    src:     "",           // ← "/photos/sakura.jpg"
+    emoji:   "🌸",
+    bg:      "linear-gradient(135deg,#d4eeff,#85c1e9)",
+    caption: "ใต้ซากุระสีชมพู 🌸",
+    doodle:  "✿ ✿ ✿",
+    rotate:  "2.5deg",
+    date:    "30 March 2024 · 10:15",
+    story:   "ดอกไม้ร่วงเหมือนหิมะสีชมพู ลมพัดเบาๆ\nเธอยิ้มแล้วดอกซากุระก็หล่นลงบนผม ช่างสมบูรณ์แบบ",
+    tags:    ["#ซากุระ","#ฤดูใบไม้ผลิ","#สวยงาม","#sakura"],
+    frame:   "B-02",
+  },
+  {
+    src:     "",           // ← "/photos/cafe.jpg"
+    emoji:   "☕",
+    bg:      "linear-gradient(135deg,#d4f5e9,#5dade2)",
+    caption: "คาเฟ่วันฝนตก ☕",
+    doodle:  "☁ ☁ ☁",
+    rotate:  "-1.5deg",
+    date:    "7 June 2024 · 14:30",
+    story:   "ฝนตกหนักมาก เราวิ่งหนีเข้าร้านกาแฟเล็กๆ\nกาแฟร้อน เสียงฝน และคนที่รัก — นาทีนั้นสมบูรณ์ที่สุด",
+    tags:    ["#คาเฟ่","#วันฝนตก","#cozy","#กาแฟ"],
+    frame:   "C-03",
+  },
+  {
+    src:     "",           // ← "/photos/festival.jpg"
+    emoji:   "🎡",
+    bg:      "linear-gradient(135deg,#e8d5f5,#c39bd3)",
+    caption: "งานเทศกาลสุดสนุก 🎡",
+    doodle:  "★ ★ ★",
+    rotate:  "3deg",
+    date:    "20 August 2024 · 19:55",
+    story:   "แสงไฟหลากสี เสียงดนตรี กลิ่นขนมหวาน\nบนชิงช้าสวรรค์เราถือมือกัน กลัวแต่ก็ยิ้ม",
+    tags:    ["#เทศกาล","#สนุก","#แสงไฟ","#festival"],
+    frame:   "D-04",
+  },
+  {
+    src:     "",           // ← "/photos/stars.jpg"
+    emoji:   "🌙",
+    bg:      "linear-gradient(135deg,#fff8dc,#ffd89b)",
+    caption: "คืนดาวพราว 🌙",
+    doodle:  "✦ ✦ ✦",
+    rotate:  "-2deg",
+    date:    "11 November 2024 · 22:08",
+    story:   "นอนดูดาวบนผ้าห่มผืนใหญ่ ท้องฟ้าเต็มไปด้วยแสงกระพริบ\nเธอชี้ดาวและตั้งชื่อมันว่า 'ดาวของเรา'",
+    tags:    ["#ดาว","#คืนคำ","#romantic","#stargazing"],
+    frame:   "E-05",
+  },
+];
+
+/**
+ * วิดีโอในส่วน Zoom Booth
+ * - src:    path ใน /public เช่น "/videos/our-video.mp4"  (ใส่ "" = ใช้ animation แทน)
+ * - poster: thumbnail ก่อนเล่น เช่น "/videos/our-video-thumb.jpg"
+ * - title / date: ข้อมูลที่แสดงใน info panel
+ */
+const VIDEO_CONFIG = {
+  src:    "",             // ← "/videos/our-video.mp4"
+  poster: "",             // ← "/videos/our-video-thumb.jpg"
+  title:  "Sunset Boardwalk",
+  date:   "June 14, 2024 · 3 min 42 sec",
+};
+
+/**
+ * เพลงประกอบ — เล่นต่อเนื่อง ไม่ reset จนกว่าจะ reload หน้าเว็บ
+ *
+ * วิธีใส่เพลง:
+ *   1. วางไฟล์เพลงไว้ใน /public/music/  เช่น  golden-hour.mp3
+ *   2. ใส่ชื่อไฟล์ใน playlist  เช่น  ["golden-hour.mp3", "my-song.mp3"]
+ *
+ * กลยุทธ์การเล่น (ป้องกันเพลงขาด):
+ *   • preload เพลงถัดไปล่วงหน้า preloadOffset วินาทีก่อนเพลงจบ
+ *   • crossfade crossfadeDuration ms ระหว่างเพลง (ไม่มี silence ระหว่างเพลง)
+ *   • เล่น loop ทั้ง playlist วนไม่รู้จบ
+ *   • sessionStorage จำ track + เวลาที่เล่น → resume หลัง navigate
+ *   • เริ่มเล่นอัตโนมัติหลัง user interaction ครั้งแรก (browser policy)
+ */
+const MUSIC_CONFIG = {
+  folder:          "/music/",       // ← folder ใน /public
+  playlist: [
+    "golden-hour.mp3",              // ← เปลี่ยนเป็นชื่อไฟล์จริงของคุณ
+    "polaroid-love.mp3",
+    "sweet-nothing.mp3",
+  ],
+  volume:          0.35,            // 0.0 – 1.0
+  crossfadeDuration: 2000,          // milliseconds
+  preloadOffset:   15,              // preload เพลงถัดไปเมื่อเหลืออีก N วินาที
+};
+
+// ══════════════════════════════════════════════════════════════════════════
+// CSS — inject ใน <style> tag แบบ synchronous เพื่อแก้ FOUC
+// (ต้องไม่อยู่ใน useEffect เพราะ useEffect วิ่งหลัง paint ครั้งแรก)
+// ══════════════════════════════════════════════════════════════════════════
+const PAGE_CSS = `
+  .zone-screen { container-type: size; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream:#fff8f0;--blush:#ffd6e0;--blush-deep:#ffb3c6;
+    --rose:#ff85a1;--rose-dark:#e05c7a;--gold:#ffd89b;
+    --gold-deep:#f5c062;--gold-rose:#e8a598;--lavender:#e8d5f5;
+    --sky:#d4eeff;--mint:#d4f5e9;--text-dark:#3d2235;
+    --text-mid:#7a4060;--text-light:#b06080;
+  }
+  html{overflow-x:hidden;scroll-behavior:smooth;}
+  body{font-family:'Nunito','Sarabun',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;overflow-y:auto;min-height:100vh;}
+  .music-player{position:fixed;bottom:20px;right:20px;z-index:500;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.22);backdrop-filter:blur(16px);border:1px solid rgba(255,200,220,0.45);border-radius:999px;padding:8px 16px 8px 12px;box-shadow:0 8px 32px rgba(220,100,140,0.18);transition:all 0.3s ease;}
+  .music-player:hover{background:rgba(255,255,255,0.35);box-shadow:0 12px 40px rgba(220,100,140,0.28);}
+  .music-play-btn{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--gold-deep));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 4px 14px rgba(255,133,161,0.4);transition:transform 0.15s,box-shadow 0.15s;flex-shrink:0;}
+  .music-play-btn:hover{transform:scale(1.1);box-shadow:0 6px 20px rgba(255,133,161,0.55);}
+  .music-play-btn:active{transform:scale(0.95);}
+  .music-info{display:flex;flex-direction:column;min-width:0;max-width:160px;}
+  .music-marquee-wrap{overflow:hidden;max-width:140px;}
+  .music-marquee{display:inline-block;white-space:nowrap;animation:musicMarquee 12s linear infinite;}
+  @keyframes musicMarquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+  .music-title{font-family:'Caveat',cursive;font-size:0.82rem;color:var(--text-mid);font-weight:700;line-height:1.2;}
+  .music-bar{display:flex;align-items:flex-end;gap:2px;height:14px;}
+  .music-bar-item{width:3px;background:var(--rose);border-radius:999px;animation:barDance ease-in-out infinite;}
+  .music-bar-item:nth-child(1){animation-duration:0.6s;animation-delay:0s;}
+  .music-bar-item:nth-child(2){animation-duration:0.8s;animation-delay:0.1s;}
+  .music-bar-item:nth-child(3){animation-duration:0.7s;animation-delay:0.2s;}
+  .music-bar-item:nth-child(4){animation-duration:0.5s;animation-delay:0.05s;}
+  @keyframes barDance{0%,100%{height:4px;}50%{height:14px;}}
+  .music-bar-item.paused{animation-play-state:paused;height:4px;}
+  .music-vol{width:60px;-webkit-appearance:none;appearance:none;height:3px;border-radius:999px;background:rgba(255,133,161,0.3);outline:none;cursor:pointer;}
+  .music-vol::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--rose);cursor:pointer;box-shadow:0 2px 6px rgba(255,133,161,0.5);}
+  .photo-real-img{width:100%;height:100%;object-fit:cover;border-radius:4px;display:block;}
+  .modal-thumb-img{width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;}
+`;
+
+
 const PAGE_STYLES = `
   .zone-screen { container-type: size; }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -851,54 +1004,8 @@ const PAGE_STYLES = `
 
 export default function Page() {
 
-  // ── Photo modal state ───────────────────────────────────────────────────
-  const PHOTO_CARDS = [
-    {
-      emoji: "🌅", caption: "ริมทะเลพระอาทิตย์ตก 🌊",
-      bg: "linear-gradient(135deg,#ffb3c6,#ff6b9d)",
-      doodle: "♡ ♡ ♡", rotate: "-3deg",
-      date: "14 January 2024 · 18:42",
-      story: "คืนนั้นฟ้าส้มกลมๆ แสงสุดท้ายก่อนมืด\nเราสองคนยืนเงียบๆ ฟังเสียงคลื่น ไม่ต้องพูดอะไรก็รู้ว่ารักกัน",
-      tags: ["#ทะเล", "#พระอาทิตย์ตก", "#ด้วยกัน", "#moment"],
-      frame: "A-01",
-    },
-    {
-      emoji: "🌸", caption: "ใต้ซากุระสีชมพู 🌸",
-      bg: "linear-gradient(135deg,#d4eeff,#85c1e9)",
-      doodle: "✿ ✿ ✿", rotate: "2.5deg",
-      date: "30 March 2024 · 10:15",
-      story: "ดอกไม้ร่วงเหมือนหิมะสีชมพู ลมพัดเบาๆ\nเธอยิ้มแล้วดอกซากุระก็หล่นลงบนผม ช่างสมบูรณ์แบบ",
-      tags: ["#ซากุระ", "#ฤดูใบไม้ผลิ", "#สวยงาม", "#sakura"],
-      frame: "B-02",
-    },
-    {
-      emoji: "☕", caption: "คาเฟ่วันฝนตก ☕",
-      bg: "linear-gradient(135deg,#d4f5e9,#5dade2)",
-      doodle: "☁ ☁ ☁", rotate: "-1.5deg",
-      date: "7 June 2024 · 14:30",
-      story: "ฝนตกหนักมาก เราวิ่งหนีเข้าร้านกาแฟเล็กๆ\nกาแฟร้อน เสียงฝน และคนที่รัก — นาทีนั้นสมบูรณ์ที่สุด",
-      tags: ["#คาเฟ่", "#วันฝนตก", "#cozy", "#กาแฟ"],
-      frame: "C-03",
-    },
-    {
-      emoji: "🎡", caption: "งานเทศกาลสุดสนุก 🎡",
-      bg: "linear-gradient(135deg,#e8d5f5,#c39bd3)",
-      doodle: "★ ★ ★", rotate: "3deg",
-      date: "20 August 2024 · 19:55",
-      story: "แสงไฟหลากสี เสียงดนตรี กลิ่นขนมหวาน\nบนชิงช้าสวรรค์เราถือมือกัน กลัวแต่ก็ยิ้ม",
-      tags: ["#เทศกาล", "#สนุก", "#แสงไฟ", "#festival"],
-      frame: "D-04",
-    },
-    {
-      emoji: "🌙", caption: "คืนดาวพราว 🌙",
-      bg: "linear-gradient(135deg,#fff8dc,#ffd89b)",
-      doodle: "✦ ✦ ✦", rotate: "-2deg",
-      date: "11 November 2024 · 22:08",
-      story: "นอนดูดาวบนผ้าห่มผืนใหญ่ ท้องฟ้าเต็มไปด้วยแสงกระพริบ\nเธอชี้ดาวและตั้งชื่อมันว่า 'ดาวของเรา'",
-      tags: ["#ดาว", "#คืนคำ", "#romantic", "#stargazing"],
-      frame: "E-05",
-    },
-  ];
+  // ── Photo modal state (data from PHOTO_CARDS_CONFIG at top of file) ────
+  const PHOTO_CARDS = PHOTO_CARDS_CONFIG;
 
   type PhotoModal = (typeof PHOTO_CARDS[0] & { closing: boolean }) | null;
   const [photoModal, setPhotoModal] = useState<PhotoModal>(null);
@@ -1388,16 +1495,8 @@ export default function Page() {
     });
     return () => cleanup.forEach((fn) => fn());
   }, []);
-// ── Inject styles client-side to avoid SSR hydration mismatch ─────────────
-  useEffect(() => {
-    const id = "page-styles";
-    if (document.getElementById(id)) return;
-    const el = document.createElement("style");
-    el.id = id;
-    el.textContent = PAGE_STYLES;
-    document.head.appendChild(el);
-    return () => { document.getElementById(id)?.remove(); };
-  }, []);
+// ── Styles injected via <style> tag in JSX (synchronous, no FOUC) ──────────
+  // PAGE_CSS is rendered directly in JSX return below
 
 // ── Scroll lock when not unlocked ─────────────────────────────────────────
   const ctaSectionRef = useRef<HTMLElement>(null);
@@ -1451,10 +1550,176 @@ export default function Page() {
     };
   }, [isUnlocked]);
 
+// ── Music Player ─────────────────────────────────────────────────────────
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const nextAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const [musicReady, setMusicReady] = useState(false);
+  const [currentTrackIdx, setCurrentTrackIdx] = useState(0);
+  const [musicVolume, setMusicVolume] = useState(MUSIC_CONFIG.volume);
+  const musicStartedRef = useRef(false);
+  const crossfadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const preloadTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const hasTracks = MUSIC_CONFIG.playlist.length > 0;
+
+  const getTrackName = (idx: number) => {
+    const name = MUSIC_CONFIG.playlist[idx] || "";
+    return name.replace(/\.[^.]+$/, "").replace(/-/g, " ");
+  };
+
+  const loadTrack = useCallback((idx: number): HTMLAudioElement => {
+    const src = MUSIC_CONFIG.folder + MUSIC_CONFIG.playlist[idx];
+    const audio = new Audio(src);
+    audio.preload = "auto";
+    audio.volume = 0;
+    return audio;
+  }, []);
+
+  // Crossfade: fade out current, fade in next over crossfadeDuration ms
+  const crossfadeTo = useCallback((nextIdx: number) => {
+    if (!hasTracks) return;
+    const fadeSteps = 20;
+    const stepMs = MUSIC_CONFIG.crossfadeDuration / fadeSteps;
+    const current = audioRef.current;
+    const next = nextAudioRef.current || loadTrack(nextIdx);
+
+    next.currentTime = 0;
+    next.play().catch(() => {});
+
+    let step = 0;
+    const fade = setInterval(() => {
+      step++;
+      const t = step / fadeSteps;
+      if (current) current.volume = Math.max(0, (1 - t) * musicVolume);
+      next.volume = Math.min(musicVolume, t * musicVolume);
+      if (step >= fadeSteps) {
+        clearInterval(fade);
+        if (current) { current.pause(); current.src = ""; }
+        audioRef.current = next;
+        nextAudioRef.current = null;
+        setCurrentTrackIdx(nextIdx);
+      }
+    }, stepMs);
+  }, [hasTracks, loadTrack, musicVolume]);
+
+  // Preload next track when approaching end of current
+  const setupPreload = useCallback((audio: HTMLAudioElement, currentIdx: number) => {
+    if (preloadTimerRef.current) clearInterval(preloadTimerRef.current);
+    preloadTimerRef.current = setInterval(() => {
+      if (!audio || audio.paused) return;
+      const remaining = audio.duration - audio.currentTime;
+      if (!isNaN(remaining) && remaining <= MUSIC_CONFIG.preloadOffset && !nextAudioRef.current) {
+        const nextIdx = (currentIdx + 1) % MUSIC_CONFIG.playlist.length;
+        nextAudioRef.current = loadTrack(nextIdx);
+      }
+    }, 1000);
+  }, [loadTrack]);
+
+  // Start music (called on first user interaction)
+  const startMusic = useCallback(() => {
+    if (!hasTracks || musicStartedRef.current) return;
+    musicStartedRef.current = true;
+
+    // Restore track index from sessionStorage (persists across navigations)
+    let startIdx = 0;
+    let startTime = 0;
+    try {
+      const saved = sessionStorage.getItem("musicState");
+      if (saved) {
+        const { idx, time, ts } = JSON.parse(saved) as { idx: number; time: number; ts: number };
+        // If saved within last 5 minutes, resume
+        if (Date.now() - ts < 5 * 60 * 1000 && idx < MUSIC_CONFIG.playlist.length) {
+          startIdx = idx;
+          startTime = time;
+        }
+      }
+    } catch { /* ignore */ }
+
+    const audio = loadTrack(startIdx);
+    audio.volume = musicVolume;
+    audio.currentTime = startTime;
+    audioRef.current = audio;
+    setCurrentTrackIdx(startIdx);
+
+    audio.play().then(() => {
+      setMusicPlaying(true);
+      setMusicReady(true);
+      setupPreload(audio, startIdx);
+    }).catch(() => {
+      setMusicReady(true); // show player even if autoplay blocked
+    });
+
+    // Auto-advance to next track when ended
+    audio.addEventListener("ended", () => {
+      const nextIdx = (startIdx + 1) % MUSIC_CONFIG.playlist.length;
+      crossfadeTo(nextIdx);
+    });
+  }, [hasTracks, loadTrack, musicVolume, setupPreload, crossfadeTo]);
+
+  // Save music state periodically to sessionStorage
+  useEffect(() => {
+    if (!hasTracks) return;
+    const save = setInterval(() => {
+      const audio = audioRef.current;
+      if (!audio || audio.paused) return;
+      try {
+        sessionStorage.setItem("musicState", JSON.stringify({
+          idx: currentTrackIdx,
+          time: audio.currentTime,
+          ts: Date.now(),
+        }));
+      } catch { /* ignore */ }
+    }, 2000);
+    return () => clearInterval(save);
+  }, [hasTracks, currentTrackIdx]);
+
+  // First user interaction → start music
+  useEffect(() => {
+    if (!hasTracks) return;
+    const tryStart = () => startMusic();
+    window.addEventListener("click", tryStart, { once: true });
+    window.addEventListener("touchstart", tryStart, { once: true });
+    window.addEventListener("keydown", tryStart, { once: true });
+    return () => {
+      window.removeEventListener("click", tryStart);
+      window.removeEventListener("touchstart", tryStart);
+      window.removeEventListener("keydown", tryStart);
+    };
+  }, [hasTracks, startMusic]);
+
+  // Sync volume changes to audio element
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = musicVolume;
+  }, [musicVolume]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ""; }
+      if (nextAudioRef.current) { nextAudioRef.current.src = ""; }
+      if (crossfadeTimerRef.current) clearTimeout(crossfadeTimerRef.current);
+      if (preloadTimerRef.current) clearInterval(preloadTimerRef.current);
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (!musicStartedRef.current) { startMusic(); return; }
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (musicPlaying) {
+      audio.pause();
+      setMusicPlaying(false);
+    } else {
+      audio.play().catch(() => {});
+      setMusicPlaying(true);
+    }
+  };
+
 // ── Render ────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* styles injected via useEffect above to avoid hydration mismatch */}
+      {/* styles injected with suppressHydrationWarning to prevent FOUC without hydration mismatch */}
+      {true && <style suppressHydrationWarning dangerouslySetInnerHTML={{ __html: PAGE_CSS + PAGE_STYLES }} />}
       {false && <style>{`
         .zone-screen { container-type: size; }
         *, *::before, *::after {
@@ -3123,9 +3388,13 @@ export default function Page() {
             <button className="modal-close-btn" onClick={closePhotoModal}>✕</button>
 
             <div className="modal-photo-area">
-              <div className="modal-thumb-scene" style={{ background: photoModal.bg }}>
-                {photoModal.emoji}
-              </div>
+              {photoModal.src ? (
+                <img src={photoModal.src} alt={photoModal.caption} className="modal-thumb-img" />
+              ) : (
+                <div className="modal-thumb-scene" style={{ background: photoModal.bg }}>
+                  {photoModal.emoji}
+                </div>
+              )}
             </div>
 
             <div className="modal-caption-area">
@@ -3165,58 +3434,78 @@ export default function Page() {
           <div className="dispenser-slot"><div className="slot-slit" /></div>
           <div className="photos-cascade">
 
-            <div className="photo-card" style={{ transform: "rotate(-3deg)", zIndex: 5 }} data-rot="-3deg" onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(0); }}>
+            <div className="photo-card" style={{ transform: `rotate(${PHOTO_CARDS_CONFIG[0].rotate})`, zIndex: 5 }} onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(0); }}>
               <div className="tape tape-tl" /><div className="tape tape-tr" />
               <div className="photo-img">
-                <div className="thumb-scene" style={{ background: "linear-gradient(135deg,#ffb3c6,#ff6b9d)" }}>🌅</div>
+                {PHOTO_CARDS_CONFIG[0].src ? (
+                  <img src={PHOTO_CARDS_CONFIG[0].src} alt={PHOTO_CARDS_CONFIG[0].caption} className="photo-real-img" loading="lazy" />
+                ) : (
+                  <div className="thumb-scene" style={{ background: PHOTO_CARDS_CONFIG[0].bg }}>{PHOTO_CARDS_CONFIG[0].emoji}</div>
+                )}
               </div>
               <div className="photo-caption">
-                ริมทะเลพระอาทิตย์ตก 🌊<br />
-                <span className="doodle-hearts">♡ ♡ ♡</span>
+                {PHOTO_CARDS_CONFIG[0].caption}<br />
+                <span className="doodle-hearts">{PHOTO_CARDS_CONFIG[0].doodle}</span>
               </div>
             </div>
 
-            <div className="photo-card" style={{ transform: "rotate(2.5deg)", zIndex: 4, marginTop: "-20px" }} data-rot="2.5deg" onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(1); }}>
+            <div className="photo-card" style={{ transform: `rotate(${PHOTO_CARDS_CONFIG[1].rotate})`, zIndex: 4, marginTop: "-20px" }} onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(1); }}>
               <div className="tape tape-tl" /><div className="tape tape-tr" />
               <div className="photo-img">
-                <div className="thumb-scene" style={{ background: "linear-gradient(135deg,#d4eeff,#85c1e9)" }}>🌸</div>
+                {PHOTO_CARDS_CONFIG[1].src ? (
+                  <img src={PHOTO_CARDS_CONFIG[1].src} alt={PHOTO_CARDS_CONFIG[1].caption} className="photo-real-img" loading="lazy" />
+                ) : (
+                  <div className="thumb-scene" style={{ background: PHOTO_CARDS_CONFIG[1].bg }}>{PHOTO_CARDS_CONFIG[1].emoji}</div>
+                )}
               </div>
               <div className="photo-caption">
-                ใต้ซากุระสีชมพู 🌸<br />
-                <span className="doodle-hearts">✿ ✿ ✿</span>
+                {PHOTO_CARDS_CONFIG[1].caption}<br />
+                <span className="doodle-hearts">{PHOTO_CARDS_CONFIG[1].doodle}</span>
               </div>
             </div>
 
-            <div className="photo-card" style={{ transform: "rotate(-1.5deg)", zIndex: 3, marginTop: "-20px" }} data-rot="-1.5deg" onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(2); }}>
+            <div className="photo-card" style={{ transform: `rotate(${PHOTO_CARDS_CONFIG[2].rotate})`, zIndex: 3, marginTop: "-20px" }} onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(2); }}>
               <div className="tape tape-tl" /><div className="tape tape-tr" />
               <div className="photo-img">
-                <div className="thumb-scene" style={{ background: "linear-gradient(135deg,#d4f5e9,#5dade2)" }}>☕</div>
+                {PHOTO_CARDS_CONFIG[2].src ? (
+                  <img src={PHOTO_CARDS_CONFIG[2].src} alt={PHOTO_CARDS_CONFIG[2].caption} className="photo-real-img" loading="lazy" />
+                ) : (
+                  <div className="thumb-scene" style={{ background: PHOTO_CARDS_CONFIG[2].bg }}>{PHOTO_CARDS_CONFIG[2].emoji}</div>
+                )}
               </div>
               <div className="photo-caption">
-                คาเฟ่วันฝนตก ☕<br />
-                <span className="doodle-hearts">☁ ☁ ☁</span>
+                {PHOTO_CARDS_CONFIG[2].caption}<br />
+                <span className="doodle-hearts">{PHOTO_CARDS_CONFIG[2].doodle}</span>
               </div>
             </div>
 
-            <div className="photo-card" style={{ transform: "rotate(3deg)", zIndex: 2, marginTop: "-20px" }} data-rot="3deg" onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(3); }}>
+            <div className="photo-card" style={{ transform: `rotate(${PHOTO_CARDS_CONFIG[3].rotate})`, zIndex: 2, marginTop: "-20px" }} onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(3); }}>
               <div className="tape tape-tl" /><div className="tape tape-tr" />
               <div className="photo-img">
-                <div className="thumb-scene" style={{ background: "linear-gradient(135deg,#e8d5f5,#c39bd3)" }}>🎡</div>
+                {PHOTO_CARDS_CONFIG[3].src ? (
+                  <img src={PHOTO_CARDS_CONFIG[3].src} alt={PHOTO_CARDS_CONFIG[3].caption} className="photo-real-img" loading="lazy" />
+                ) : (
+                  <div className="thumb-scene" style={{ background: PHOTO_CARDS_CONFIG[3].bg }}>{PHOTO_CARDS_CONFIG[3].emoji}</div>
+                )}
               </div>
               <div className="photo-caption">
-                งานเทศกาลสุดสนุก 🎡<br />
-                <span className="doodle-hearts">★ ★ ★</span>
+                {PHOTO_CARDS_CONFIG[3].caption}<br />
+                <span className="doodle-hearts">{PHOTO_CARDS_CONFIG[3].doodle}</span>
               </div>
             </div>
 
-            <div className="photo-card" style={{ transform: "rotate(-2deg)", zIndex: 1, marginTop: "-20px" }} data-rot="-2deg" onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(4); }}>
+            <div className="photo-card" style={{ transform: `rotate(${PHOTO_CARDS_CONFIG[4].rotate})`, zIndex: 1, marginTop: "-20px" }} onClick={(e) => { spawnSparkle(e.clientX, e.clientY); openPhotoModal(4); }}>
               <div className="tape tape-tl" /><div className="tape tape-tr" />
               <div className="photo-img">
-                <div className="thumb-scene" style={{ background: "linear-gradient(135deg,#fff8dc,#ffd89b)" }}>🌙</div>
+                {PHOTO_CARDS_CONFIG[4].src ? (
+                  <img src={PHOTO_CARDS_CONFIG[4].src} alt={PHOTO_CARDS_CONFIG[4].caption} className="photo-real-img" loading="lazy" />
+                ) : (
+                  <div className="thumb-scene" style={{ background: PHOTO_CARDS_CONFIG[4].bg }}>{PHOTO_CARDS_CONFIG[4].emoji}</div>
+                )}
               </div>
               <div className="photo-caption">
-                คืนดาวพราว 🌙<br />
-                <span className="doodle-hearts">✦ ✦ ✦</span>
+                {PHOTO_CARDS_CONFIG[4].caption}<br />
+                <span className="doodle-hearts">{PHOTO_CARDS_CONFIG[4].doodle}</span>
               </div>
             </div>
 
@@ -3372,10 +3661,23 @@ export default function Page() {
               style={{ left: "24.5%", top: "21%", width: "46.5%", height: "34.5%", borderRadius: "10px",
                        background: "#1a0d18", padding: "4px" }}>
               <div className="video-zone-content">
-                <div className="video-scene" id="videoScene"
-                  style={{ background: "linear-gradient(160deg,#ff9a56,#ffad7e,#ffd6a8)" }}>
-                  <span className="video-emoji" id="videoEmoji">💃🕺</span>
-                </div>
+                {VIDEO_CONFIG.src ? (
+                  <video
+                    id="boothVideo"
+                    src={VIDEO_CONFIG.src}
+                    poster={VIDEO_CONFIG.poster || undefined}
+                    loop
+                    playsInline
+                    muted
+                    autoPlay
+                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "8px" }}
+                  />
+                ) : (
+                  <div className="video-scene" id="videoScene"
+                    style={{ background: "linear-gradient(160deg,#ff9a56,#ffad7e,#ffd6a8)" }}>
+                    <span className="video-emoji" id="videoEmoji">💃🕺</span>
+                  </div>
+                )}
               </div>
               <div className="video-controls-overlay" id="videoControlsOverlay">
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
@@ -3448,10 +3750,10 @@ export default function Page() {
             <h3 style={{ fontFamily: "'Playfair Display',serif", fontStyle: "italic",
                          fontSize: "18px", color: "#fff", textShadow: "0 2px 8px rgba(0,0,0,0.2)",
                          marginBottom: "6px" }}>
-              Sunset Boardwalk
+              {VIDEO_CONFIG.title}
             </h3>
             <p style={{ fontFamily: "'Sarabun',sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.8)" }}>
-              June 14, 2024 &bull; 3 min 42 sec
+              {VIDEO_CONFIG.date}
             </p>
           </div>
         </div>
@@ -3564,6 +3866,34 @@ export default function Page() {
 
       </div> {/* end inner blur div */}
       </div> {/* end height/overflow gate */}
+
+      {/* ── MUSIC PLAYER ── */}
+      {hasTracks && musicReady && (
+        <div className="music-player">
+          <button className="music-play-btn" onClick={toggleMusic} title={musicPlaying ? "หยุดเพลง" : "เล่นเพลง"}>
+            {musicPlaying ? "⏸" : "▶"}
+          </button>
+          <div className="music-info">
+            <div className="music-marquee-wrap">
+              <span className="music-marquee music-title">
+                {getTrackName(currentTrackIdx)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{getTrackName(currentTrackIdx)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </span>
+            </div>
+            <div className="music-bar">
+              {[1,2,3,4].map(i => (
+                <div key={i} className={`music-bar-item${musicPlaying ? "" : " paused"}`} />
+              ))}
+            </div>
+          </div>
+          <input
+            type="range" min={0} max={1} step={0.01}
+            value={musicVolume}
+            className="music-vol"
+            onChange={(e) => setMusicVolume(parseFloat(e.target.value))}
+            title="ปรับระดับเสียง"
+          />
+        </div>
+      )}
 
       {/* ── PASSCODE MODAL ── */}
       {showModal && (
